@@ -12,6 +12,7 @@ This project consists of two main demo implementations:
 ## General Architecture
 
 Here is the general architecture for this solution:
+
 ![](images/IndoorRealTimePositionTracking_AzureMaps_IoTCentral.png)
 
 Main components:
