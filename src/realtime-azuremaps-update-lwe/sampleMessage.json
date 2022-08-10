@@ -1,0 +1,11 @@
+{
+    "deviceId": "2ijbfmawbtc",
+    "enqueuedTime": "2022-05-22T21:25:58.577Z",
+    "telemetry": {
+        "GPSCoordinates": {
+            "lon": 2.283296758834817,
+            "lat": 48.87881491363914,
+            "alt": 0
+        }
+    }
+}

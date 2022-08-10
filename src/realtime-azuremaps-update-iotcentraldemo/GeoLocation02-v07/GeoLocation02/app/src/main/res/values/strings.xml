@@ -1,0 +1,19 @@
+<resources>
+    <string name="app_name">GeoLocation</string>
+    <string name="lblLat">Lat (&#176;)</string>
+    <string name="lblLon">Lon (&#176;)</string>
+    <string name="btnStopTracking">Stop Tracking</string>
+    <string name="btnStartTracking">Start Tracking</string>
+    <string name="btnOK">OK</string>
+    <string name="txtStarted">Started</string>
+    <string name="txtStopped">Stopped</string>
+    <string name="lblCounter">Counter</string>
+    <string name="lblStatus">Status</string>
+    <string name="lblTime">Time (h:m:s)</string>
+    <string name="btnShowMap">Show Map</string>
+    <string name="btnShowText">Show Text</string>
+    <string name="lblAlt">Alt (m)</string>
+    <string name="lblBearing">Bearing (&#176;)</string>
+    <string name="lblSpeed">Speed (kph)</string>
+    <string name="lblDistance">Distance (km)</string>
+</resources>

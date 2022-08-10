@@ -1,0 +1,308 @@
+<html>
+    <head>
+        <title>Azure Maps LoRaWAN World Expo 2022 Demo</title>
+        <link rel="shortcut icon" href="<YOUR-BLOB-STORAGE-URL>/public/favicon.ico"/>
+        <meta charset="utf-8">
+        <meta http-equiv="x-ua-compatible" content="IE=Edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+        <!-- Load the JavaScript and CSS files for the Azure Maps Web SDK. -->
+        <link rel="stylesheet" href="https://atlas.microsoft.com/sdk/javascript/mapcontrol/2/atlas.min.css" type="text/css">
+        <script src="https://atlas.microsoft.com/sdk/javascript/mapcontrol/2/atlas.min.js"></script>
+        <!-- Load the JavaScript and CSS files that has our custom control. -->
+        <link rel="stylesheet" href="<YOUR-BLOB-STORAGE-URL>/public/azure-maps-layer-legend.min.css" type="text/css" />
+        <script src="<YOUR-BLOB-STORAGE-URL>/public/azure-maps-layer-legend.min.js"></script>
+
+        <style>
+            html, body {
+                margin: 0;
+            }
+   
+            #myMap {
+                height: 100vh;
+                width: 100vw;
+            }
+
+            td {
+                font-family: Arial;
+                font-size: 12px;
+            }
+
+            .controlContainer {
+                position: absolute;
+                top: 10px;
+                left: 50%;
+                transform: translateX(-50%);
+                background-color: #fff;
+            }
+
+            .navText {
+                margin: 2px;
+                background-color: #fff;
+                box-shadow: rgb(0 0 0 / 16%) 0 0 4px;
+                border: 1px solid grey;
+                border-radius: 2px;
+                width: 100px;
+                height: 32px;
+                padding: 2px 8px;
+                color: black;
+                font-family: Arial;
+                font-size: 12px;
+                font-weight: bold;
+                text-align: center;
+                text-decoration: none;
+                line-height: 20px;
+            }
+
+            .navButton {
+                margin: 2px;
+                background-color: #fff;
+                box-shadow: rgb(0 0 0 / 16%) 0 0 4px;
+                border: 1px solid grey;
+                border-radius: 2px;
+                width: 100px;
+                height: 32px;
+                padding: 2px 8px;
+                color: black;
+                font-size: 12px;
+                font-weight: bold;
+                text-align: center;
+                text-decoration: none;
+                line-height: 20px;
+                display: inline-block;
+                cursor: pointer;
+            }
+
+            .navButton:hover {
+                color: deepskyblue;
+            }
+        </style>
+    </head>
+    <body onload="InitMap()">
+        <div id="myMap"></div>
+        <div class="controlContainer">
+            <table>
+                <tr>
+                    <td>Enter Device ID</td><td>
+                        <input class="navText" type="text" id="txtDevice">
+                    </td>
+                    <td>
+                        <button class="navButton" onclick="findDevice()" title="Find Device">Find Device</button>
+                    </td>
+                    <td>
+                        <button class="navButton" onclick="loadHistory()" title="Load History">Load History</button>
+                    </td>
+                </tr>
+            </table>
+        </div>
+        
+        <script>
+            //
+            // Begin Edits
+            //
+            var mapKey = '<YOUR-AZURE-MAPS-KEY>';
+            var urlHistory = '<YOUR-BLOB-STORAGE-URL>/public/lochistory.json';
+            //
+            // End Edits
+            //
+            var map;
+            var popup = null;
+            var dsHeatmap = new atlas.source.DataSource();
+            var lHeatmap = null;
+            var dsLastLoc = new atlas.source.DataSource();
+            var lLastLoc = null;
+
+            function InitMap()
+            {
+                map = new atlas.Map('myMap', {
+                    center: [2.2832997,48.8790224],
+                    zoom: 18.5,
+                    language: 'en-US',
+                    renderWorldCopies: false,
+                    showBuildingModels: true,
+                    showLogo: true,
+                    showFeedbackLink: false,
+                    style: 'grayscale_dark',
+                    authOptions: {
+                        authType: 'subscriptionKey',
+                        subscriptionKey: mapKey
+                    }
+                });
+
+                //Wait until the map resources are ready.
+                map.events.add('ready', function () {
+                    // add map navigation and style controls
+                    map.controls.add([
+                        new atlas.control.ZoomControl(),
+                        new atlas.control.CompassControl(),
+                        new atlas.control.PitchControl(),
+                        new atlas.control.StyleControl({
+                            mapStyles: ["road", "grayscale_light", "grayscale_dark", "night", "satellite", "satellite_road_labels"]
+                        })
+                    ], {
+                        position: "top-right"
+                    });
+
+                    // Create the layer control.
+                    layerControl = new atlas.control.LayerControl({
+                        // layout of the control (accordion, list or carousel)
+                        layout: 'list',
+                        // Set dynamic layer group settings. 
+                        dynamicLayerGroup: {
+                            groupTitle: 'Layers',
+                            layout: 'checkbox'
+                        },
+                        layerGroups: [
+                        {
+                            layout: 'range',
+                            groupTitle: 'Heatmap Intensity',
+                            layers: ['Heatmap'],
+                            items: [{
+                                label: '{rangeValue}',
+                                value: 1,
+                                min: 0,
+                                max: 5,
+                                step:0.02,
+                                style: {
+                                    intensity: '{rangeValue}'
+                                },
+                                updateOnInput: true
+                            }]
+                        },
+                        {
+                            layout: 'range',
+                            groupTitle: 'Heatmap Radius',
+                            layers: ['Heatmap'],
+                            items: [{
+                                label: '{rangeValue}',
+                                value: 10,
+                                min: 1,
+                                max: 100,
+                                step:1,
+                                style: {
+                                    radius: '{rangeValue}'
+                                },
+                                updateOnInput: true
+                            }]
+                        }]
+                    });
+
+                    // Add the layer control to the map. 
+                    map.controls.add(layerControl, {
+                        position: 'top-left'
+                    });
+
+                    // Add a Bubble datasource and layer
+                    map.sources.add(dsLastLoc);
+                    lLastLoc = new atlas.layer.BubbleLayer(dsLastLoc, 'Last Location', {
+                        radius: 5,
+                        strokeColor: "#4288f7",
+                        strokeWidth: 1, 
+                        color: "#4288f7",
+                        visible: true 
+                        });
+                    map.layers.add(lLastLoc);
+
+                    // Add a Heatmap datasource and layer
+                    map.sources.add(dsHeatmap);
+                    lHeatmap = new atlas.layer.HeatMapLayer(dsHeatmap, 'Heatmap', {
+                        radius: 10,
+                        opacity: 0.8
+                        });
+                    map.layers.add(lHeatmap, 'Last Location');
+
+                    // Add an Image Layer
+                    map.layers.add(new atlas.layer.ImageLayer({
+                        url: '<YOUR-BLOB-STORAGE-URL>/public/LWE Exhibit Hall 2022 - Final.png',
+                        coordinates: [
+                            [2.2815, 48.87975], //Top Left Corner
+                            [2.28515, 48.87975], //Top Right Corner
+                            [2.28515, 48.8784], //Bottom Right Corner
+                            [2.2815, 48.8784]  //Bottom Left Corner
+                        ],
+                        minZoom: 15,
+                        maxZoom: 20,
+                        visible: true
+                    }, 'Image Layer'), 'Heatmap');
+
+                    // Create a popup but leave it closed so we can update it and display it later.
+                    popup = new atlas.Popup();
+
+                    // Add a click event to the layer.
+                    map.events.add('click', lLastLoc, showPopup);
+
+                    // Connect to Azure Web PubSub
+                    (async function () {
+                        let res = await fetch(`${window.location.origin}/api/negotiate`);
+                        let url = await res.json();
+                        let ws = new WebSocket(url.url);
+                        ws.onopen = () => console.log('connected');
+
+                        ws.onmessage = event => {
+                            var msg = JSON.parse(event.data);
+                            console.log("Telemetry update for Device ID: " + msg.DeviceID + ", Lat: " + msg.Lat + ", Lon: " + msg.Lon);
+                            dsHeatmap.add(new atlas.data.Point([msg.Lon, msg.Lat]));
+
+                            try{
+                                dsLastLoc.getShapeById(msg.DeviceID).setCoordinates([msg.Lon, msg.Lat]);
+                            }
+                            catch(err){
+                                dsLastLoc.add( new atlas.data.Feature(new atlas.data.Point([msg.Lon, msg.Lat]), {
+                                    title: 'Device ID: ' + msg.DeviceID,
+                                    description: 'Lat: ' + msg.Lat + '<br>Lon: ' + msg.Lon
+                                }, msg.DeviceID));
+                            }
+                        };
+                    })();
+                });
+            }
+
+            function showPopup(e) {
+                if (e.shapes && e.shapes.length > 0) {
+                    var properties = e.shapes[0].getProperties();
+
+                    popup.setOptions({
+                        //Update the content of the popup.
+                        content: atlas.PopupTemplate.applyTemplate(properties, properties.popupTemplate),
+
+                        //Update the position of the popup with the pins coordinate.
+                        position: e.shapes[0].getCoordinates()
+                    });
+
+                    //Open the popup.
+                    popup.open(map);
+                }
+            }
+
+            function loadHistory(){
+                dsHeatmap.importDataFromUrl(urlHistory);
+            }
+
+            function findDevice(){
+                try{
+                    var device = dsLastLoc.getShapeById(document.getElementById("txtDevice").value);
+                    console.log("Searching for Device ID: " + device);
+                    
+                    var properties = device.getProperties()
+                    popup.setOptions({
+                        //Update the content of the popup.
+                        content: atlas.PopupTemplate.applyTemplate(properties, properties.popupTemplate),
+
+                        //Update the position of the popup with the pins coordinate.
+                        position: device.getCoordinates()
+                    });
+
+                    // Make the layer for the last loc visible
+                    var options = lLastLoc.getOptions();
+                    options.visible = true;
+                    lLastLoc.setOptions(options);
+
+                    // Set the map view and open the popup.
+                    popup.open(map);
+                }
+                catch(err){
+                    alert("Device ID " + device + " not found");
+                }
+            }
+        </script>
+    </body>
+</html>
