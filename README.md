@@ -7,6 +7,15 @@ The purpose of this project is to ilustrate how we implemented realtime position
 This project consists of two main demo implementations:
 
 * LoRaWAN World Expo demo (based on a real deployment made for this conference in July of 2022), which is located in [this folder](src/realtime-azuremaps-update-lwe).
+
+People's location heatmap for the LoRaWAN World Expo at the end of the conference:
+
+![](images/lwe_heatmap.png)
+
+All participating devices in IoT Central console:
+
+![](images/lwe_iotc_alldevices.png)
+
 * IoT Central plug and play demo (using the IoT Central plug and play smartphone application as the device providing tracking information and a general public venue as an example of an overlay image), which is located in [this folder](src/realtime-azuremaps-update-iotcentraldemo).
 
 ## General Architecture
