@@ -1,6 +1,6 @@
 # Indoor real-time position tracking using LoRaWAN devices and Azure Maps
 
-The purpose of this project is to ilustrate how we implemented realtime position tracking for the LoRaWAN World Expo 2022 in Paris using Actility's Abeeway LoRaWAN trackers, Azure PubSub, Azure IoT Central, and Azure Maps. This is a simple implementation of an image overlay of the venue (Palace of Congress in Paris) on top of a map, leveraging indoor beacons located in the venue to enable the trackers to provide accurate indoor positioning using Actility's Location Services.
+The purpose of this project is to illustrate how we implemented real-time position tracking for the LoRaWAN World Expo 2022 in Paris using Actility's Abeeway LoRaWAN trackers, Azure PubSub, Azure IoT Central, and Azure Maps. This is a simple implementation of an image overlay of the venue (Palace of Congress in Paris) on top of a map, leveraging indoor beacons located in the venue to enable the trackers to provide accurate indoor positioning using Actility's Location Services.
 
 ## Available Implementations
 
