@@ -8,4 +8,4 @@ For a `TimerTrigger` to work, you provide a schedule in the form of a [cron expr
 
 ## Learn more
 
-<TODO> Documentation
+For additional information, please review the corresponding [Azure documentation](https://learn.microsoft.com/en-us/azure/azure-functions/functions-bindings-timer?tabs=in-process&pivots=programming-language-javascript).
