@@ -51,7 +51,8 @@ Main components:
 
 ### Installation
 
-Please, follow instructions described [here](docs/Azure-Maps-IoT-Central-Demo.pptx).
+To deploy the IoT Central application demo, please follow the instructions described [here](docs/Indoor real-time position tracking using LoRaWAN devices and Azure Maps - Deployment Instructions.docx).
+Information about additional use cases can be found [here](docs/Azure-Maps-IoT-Central-Demo.pptx).
 
 ## Resources
 
