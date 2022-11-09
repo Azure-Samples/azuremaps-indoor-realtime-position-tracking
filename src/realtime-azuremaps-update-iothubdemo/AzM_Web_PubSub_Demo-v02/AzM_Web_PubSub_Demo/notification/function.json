@@ -1,0 +1,20 @@
+{
+  "bindings": [
+    {
+      "type": "eventHubTrigger",
+      "name": "myEventHubMessage",
+      "direction": "in",
+      "eventHubName": "<YOUR-EVENT-HUB-NAME>",
+      "connection": "EventHubConnectionString",
+      "cardinality": "many",
+      "consumerGroup": "$Default",
+      "dataType": "string"
+    },
+    {
+    "type": "webPubSub",
+    "name": "actions",
+    "hub": "notification",
+    "direction": "out"
+    }
+  ]
+}
