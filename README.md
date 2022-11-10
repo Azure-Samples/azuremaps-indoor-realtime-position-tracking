@@ -51,11 +51,11 @@ Main components:
 
 ### Installation
 
-To deploy the IoT Central application demo, please follow the instructions described [here](docs/Indoor%20real-time%20position%20tracking%20using%20Azure%20Maps%20and%20IoT%20Central%20-%20Deployment%20Instructions.docx).
+To deploy the IoT Central application demo, please follow the instructions described [here](docs/Indoor%20real-time%20position%20tracking%20using%20Azure%20Maps%20and%20IoT%20Central%20-%20Deployment%20Instructions.pdf).
 
-Information about additional use cases can be found [here](docs/Azure-Maps-IoT-Central-Demo.pptx).
+Information about additional use cases can be found [here](docs/Azure-Maps-IoT-Central-Demo.pdf).
 
-We also have a demo path based on IoT Hub so that you can have better control of all the corresponding knobs (please, see the [solution architecture diagram](docs/Azure-Maps-RealTime-Tracking-Demo-Architecture.pptx) for more details). Installation instructions for this version can be found [here](docs/Indoor%20real-time%20position%20tracking%20using%20Azure%20Maps%20and%20IoT%20Hub%20-%20Deployment%20Instructions.docx).
+We also have a demo path based on IoT Hub so that you can have better control of all the corresponding knobs (please, see the [solution architecture diagram](docs/Azure-Maps-RealTime-Tracking-Demo-Architecture.pdf) for more details). Installation instructions for this version can be found [here](docs/Indoor%20real-time%20position%20tracking%20using%20Azure%20Maps%20and%20IoT%20Hub%20-%20Deployment%20Instructions.pdf).
 
 ## Resources
 
