@@ -19,7 +19,8 @@ var iotHubName = '${projectName}Hub${uniqueString(resourceGroup().id)}'
 var storageAccountName = '${toLower(projectName)}${uniqueString(resourceGroup().id)}'
 var storageEndpoint1 = 'iotclogs'
 var routeName1 = '${storageEndpoint1}-route'
-var storageContainerName = 'iotclogs'
+var storageContainerName1 = 'iotclogs'
+var storageContainerName2 = 'public'
 
 resource storageAccount 'Microsoft.Storage/storageAccounts@2022-05-01' = {
   name: storageAccountName
@@ -30,10 +31,20 @@ resource storageAccount 'Microsoft.Storage/storageAccounts@2022-05-01' = {
   kind: 'Storage'
 }
 
-resource container 'Microsoft.Storage/storageAccounts/blobServices/containers@2022-05-01' = {
-  name: '${storageAccountName}/default/${storageContainerName}'
+resource container1 'Microsoft.Storage/storageAccounts/blobServices/containers@2022-05-01' = {
+  name: '${storageAccountName}/default/${storageContainerName1}'
   properties: {
     publicAccess: 'None'
+  }
+  dependsOn: [
+    storageAccount
+  ]
+}
+
+resource container2 'Microsoft.Storage/storageAccounts/blobServices/containers@2022-05-01' = {
+  name: '${storageAccountName}/default/${storageContainerName2}'
+  properties: {
+    publicAccess: 'Blob'
   }
   dependsOn: [
     storageAccount
@@ -59,7 +70,7 @@ resource IoTHub 'Microsoft.Devices/IotHubs@2021-07-02' = {
         storageContainers: [
           {
             connectionString: 'DefaultEndpointsProtocol=https;AccountName=${storageAccountName};EndpointSuffix=${environment().suffixes.storage};AccountKey=${storageAccount.listKeys().keys[0].value}'
-            containerName: storageContainerName
+            containerName: storageContainerName1
             fileNameFormat: '{iothub}/{partition}/{YYYY}/{MM}/{DD}/{HH}/{mm}'
             batchFrequencyInSeconds: 100
             maxChunkSizeInBytes: 104857600

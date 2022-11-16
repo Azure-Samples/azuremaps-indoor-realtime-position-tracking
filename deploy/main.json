@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.12.40.16777",
-      "templateHash": "14083675239842501156"
+      "templateHash": "15989460755745646913"
     }
   },
   "parameters": {
@@ -99,7 +99,8 @@
     "storageAccountName": "[format('{0}{1}', toLower(parameters('projectName')), uniqueString(resourceGroup().id))]",
     "storageEndpoint1": "iotclogs",
     "routeName1": "[format('{0}-route', variables('storageEndpoint1'))]",
-    "storageContainerName": "iotclogs"
+    "storageContainerName1": "iotclogs",
+    "storageContainerName2": "public"
   },
   "resources": [
     {
@@ -115,9 +116,20 @@
     {
       "type": "Microsoft.Storage/storageAccounts/blobServices/containers",
       "apiVersion": "2022-05-01",
-      "name": "[format('{0}/default/{1}', variables('storageAccountName'), variables('storageContainerName'))]",
+      "name": "[format('{0}/default/{1}', variables('storageAccountName'), variables('storageContainerName1'))]",
       "properties": {
         "publicAccess": "None"
+      },
+      "dependsOn": [
+        "[resourceId('Microsoft.Storage/storageAccounts', variables('storageAccountName'))]"
+      ]
+    },
+    {
+      "type": "Microsoft.Storage/storageAccounts/blobServices/containers",
+      "apiVersion": "2022-05-01",
+      "name": "[format('{0}/default/{1}', variables('storageAccountName'), variables('storageContainerName2'))]",
+      "properties": {
+        "publicAccess": "Blob"
       },
       "dependsOn": [
         "[resourceId('Microsoft.Storage/storageAccounts', variables('storageAccountName'))]"
@@ -144,7 +156,7 @@
             "storageContainers": [
               {
                 "connectionString": "[format('DefaultEndpointsProtocol=https;AccountName={0};EndpointSuffix={1};AccountKey={2}', variables('storageAccountName'), environment().suffixes.storage, listKeys(resourceId('Microsoft.Storage/storageAccounts', variables('storageAccountName')), '2022-05-01').keys[0].value)]",
-                "containerName": "[variables('storageContainerName')]",
+                "containerName": "[variables('storageContainerName1')]",
                 "fileNameFormat": "{iothub}/{partition}/{YYYY}/{MM}/{DD}/{HH}/{mm}",
                 "batchFrequencyInSeconds": 100,
                 "maxChunkSizeInBytes": 104857600,
