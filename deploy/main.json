@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.12.40.16777",
-      "templateHash": "9613460251725138589"
+      "templateHash": "14083675239842501156"
     }
   },
   "parameters": {
@@ -44,6 +44,53 @@
       "defaultValue": 4,
       "metadata": {
         "description": "Partitions used for the event stream."
+      }
+    },
+    "wpsName": {
+      "type": "string",
+      "defaultValue": "[uniqueString(resourceGroup().id)]",
+      "minLength": 3,
+      "maxLength": 63,
+      "metadata": {
+        "description": "The name for your new Web PubSub instance."
+      }
+    },
+    "UnitCount": {
+      "type": "int",
+      "defaultValue": 1,
+      "allowedValues": [
+        1,
+        2,
+        5,
+        10,
+        20,
+        50,
+        100
+      ],
+      "metadata": {
+        "description": "Unit count"
+      }
+    },
+    "Sku": {
+      "type": "string",
+      "defaultValue": "Free_F1",
+      "allowedValues": [
+        "Standard_S1",
+        "Free_F1"
+      ],
+      "metadata": {
+        "description": "SKU name"
+      }
+    },
+    "PricingTier": {
+      "type": "string",
+      "defaultValue": "Free",
+      "allowedValues": [
+        "Free",
+        "Standard"
+      ],
+      "metadata": {
+        "description": "Pricing tier"
       }
     }
   },
@@ -148,6 +195,64 @@
       "dependsOn": [
         "[resourceId('Microsoft.Storage/storageAccounts', variables('storageAccountName'))]"
       ]
+    },
+    {
+      "type": "Microsoft.SignalRService/webPubSub",
+      "apiVersion": "2021-10-01",
+      "name": "[parameters('wpsName')]",
+      "location": "[parameters('location')]",
+      "sku": {
+        "capacity": "[parameters('UnitCount')]",
+        "name": "[parameters('Sku')]",
+        "tier": "[parameters('PricingTier')]"
+      },
+      "identity": {
+        "type": "None"
+      },
+      "properties": {
+        "disableAadAuth": false,
+        "disableLocalAuth": false,
+        "liveTraceConfiguration": {
+          "categories": [
+            {
+              "enabled": "false",
+              "name": "ConnectivityLogs"
+            },
+            {
+              "enabled": "false",
+              "name": "MessagingLogs"
+            }
+          ],
+          "enabled": "false"
+        },
+        "networkACLs": {
+          "defaultAction": "Deny",
+          "publicNetwork": {
+            "allow": [
+              "ServerConnection",
+              "ClientConnection",
+              "RESTAPI",
+              "Trace"
+            ]
+          }
+        },
+        "publicNetworkAccess": "Enabled",
+        "resourceLogConfiguration": {
+          "categories": [
+            {
+              "enabled": "true",
+              "name": "ConnectivityLogs"
+            },
+            {
+              "enabled": "true",
+              "name": "MessagingLogs"
+            }
+          ]
+        },
+        "tls": {
+          "clientCertEnabled": false
+        }
+      }
     }
   ]
 }
