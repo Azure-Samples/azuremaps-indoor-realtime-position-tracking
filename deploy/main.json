@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.12.40.16777",
-      "templateHash": "15989460755745646913"
+      "templateHash": "10324413460476514004"
     }
   },
   "parameters": {
@@ -24,83 +24,22 @@
       "metadata": {
         "description": "The Azure region to use for the deployment."
       }
-    },
-    "skuName": {
-      "type": "string",
-      "defaultValue": "B1",
-      "metadata": {
-        "description": "The SKU to use for the IoT Hub."
-      }
-    },
-    "skuUnits": {
-      "type": "int",
-      "defaultValue": 1,
-      "metadata": {
-        "description": "The number of IoT Hub units."
-      }
-    },
-    "d2cPartitions": {
-      "type": "int",
-      "defaultValue": 4,
-      "metadata": {
-        "description": "Partitions used for the event stream."
-      }
-    },
-    "wpsName": {
-      "type": "string",
-      "defaultValue": "[uniqueString(resourceGroup().id)]",
-      "minLength": 3,
-      "maxLength": 63,
-      "metadata": {
-        "description": "The name for your new Web PubSub instance."
-      }
-    },
-    "UnitCount": {
-      "type": "int",
-      "defaultValue": 1,
-      "allowedValues": [
-        1,
-        2,
-        5,
-        10,
-        20,
-        50,
-        100
-      ],
-      "metadata": {
-        "description": "Unit count"
-      }
-    },
-    "Sku": {
-      "type": "string",
-      "defaultValue": "Free_F1",
-      "allowedValues": [
-        "Standard_S1",
-        "Free_F1"
-      ],
-      "metadata": {
-        "description": "SKU name"
-      }
-    },
-    "PricingTier": {
-      "type": "string",
-      "defaultValue": "Free",
-      "allowedValues": [
-        "Free",
-        "Standard"
-      ],
-      "metadata": {
-        "description": "Pricing tier"
-      }
     }
   },
   "variables": {
+    "skuName": "B1",
+    "skuUnits": 1,
+    "d2cPartitions": 4,
     "iotHubName": "[format('{0}Hub{1}', parameters('projectName'), uniqueString(resourceGroup().id))]",
     "storageAccountName": "[format('{0}{1}', toLower(parameters('projectName')), uniqueString(resourceGroup().id))]",
     "storageEndpoint1": "iotclogs",
     "routeName1": "[format('{0}-route', variables('storageEndpoint1'))]",
     "storageContainerName1": "iotclogs",
-    "storageContainerName2": "public"
+    "storageContainerName2": "public",
+    "wpsName": "[format('{0}{1}', toLower(parameters('projectName')), uniqueString(resourceGroup().id))]",
+    "UnitCount": 1,
+    "Sku": "Free_F1",
+    "PricingTier": "Free"
   },
   "resources": [
     {
@@ -141,14 +80,14 @@
       "name": "[variables('iotHubName')]",
       "location": "[parameters('location')]",
       "sku": {
-        "name": "[parameters('skuName')]",
-        "capacity": "[parameters('skuUnits')]"
+        "name": "[variables('skuName')]",
+        "capacity": "[variables('skuUnits')]"
       },
       "properties": {
         "eventHubEndpoints": {
           "events": {
             "retentionTimeInDays": 1,
-            "partitionCount": "[parameters('d2cPartitions')]"
+            "partitionCount": "[variables('d2cPartitions')]"
           }
         },
         "routing": {
@@ -211,12 +150,12 @@
     {
       "type": "Microsoft.SignalRService/webPubSub",
       "apiVersion": "2021-10-01",
-      "name": "[parameters('wpsName')]",
+      "name": "[variables('wpsName')]",
       "location": "[parameters('location')]",
       "sku": {
-        "capacity": "[parameters('UnitCount')]",
-        "name": "[parameters('Sku')]",
-        "tier": "[parameters('PricingTier')]"
+        "capacity": "[variables('UnitCount')]",
+        "name": "[variables('Sku')]",
+        "tier": "[variables('PricingTier')]"
       },
       "identity": {
         "type": "None"

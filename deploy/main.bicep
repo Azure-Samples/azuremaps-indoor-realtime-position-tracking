@@ -7,13 +7,13 @@ param projectName string = 'azuremaps'
 param location string = resourceGroup().location
 
 @description('The SKU to use for the IoT Hub.')
-param skuName string = 'B1'
+var skuName = 'B1'
 
 @description('The number of IoT Hub units.')
-param skuUnits int = 1
+var skuUnits = 1
 
 @description('Partitions used for the event stream.')
-param d2cPartitions int = 4
+var d2cPartitions = 4
 
 var iotHubName = '${projectName}Hub${uniqueString(resourceGroup().id)}'
 var storageAccountName = '${toLower(projectName)}${uniqueString(resourceGroup().id)}'
@@ -125,35 +125,16 @@ resource IoTHub 'Microsoft.Devices/IotHubs@2021-07-02' = {
 // Parameters
 
 @description('The name for your new Web PubSub instance.')
-@maxLength(63)
-@minLength(3)
-param wpsName string = uniqueString(resourceGroup().id)
+var wpsName = '${toLower(projectName)}${uniqueString(resourceGroup().id)}'
 
 @description('Unit count')
-@allowed([
-  1
-  2
-  5
-  10
-  20
-  50
-  100
-])
-param UnitCount int = 1
+var UnitCount = 1
 
 @description('SKU name')
-@allowed([
-  'Standard_S1'
-  'Free_F1'
-])
-param Sku string = 'Free_F1'
+var Sku = 'Free_F1'
 
 @description('Pricing tier')
-@allowed([
-  'Free'
-  'Standard'
-])
-param PricingTier string = 'Free'
+var PricingTier = 'Free'
 
 // Resource definition
 resource webpubsub 'Microsoft.SignalRService/webPubSub@2021-10-01' = {
