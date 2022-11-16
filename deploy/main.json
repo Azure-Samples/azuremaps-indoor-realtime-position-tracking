@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.12.40.16777",
-      "templateHash": "11634958654521886195"
+      "templateHash": "2902807329463889420"
     }
   },
   "parameters": {
@@ -236,11 +236,22 @@
     },
     {
       "type": "Microsoft.Maps/accounts",
-      "apiVersion": "2021-02-01",
+      "apiVersion": "2021-12-01-preview",
       "name": "[format('{0}{1}', toLower(parameters('projectName')), uniqueString(resourceGroup().id))]",
       "location": "[parameters('location')]",
       "sku": {
         "name": "G2"
+      },
+      "properties": {
+        "cors": {
+          "corsRules": [
+            {
+              "allowedOrigins": [
+                "*"
+              ]
+            }
+          ]
+        }
       }
     }
   ]
