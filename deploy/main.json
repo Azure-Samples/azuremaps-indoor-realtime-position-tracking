@@ -5,13 +5,13 @@
     "_generator": {
       "name": "bicep",
       "version": "0.12.40.16777",
-      "templateHash": "18296712123482077241"
+      "templateHash": "9613460251725138589"
     }
   },
   "parameters": {
     "projectName": {
       "type": "string",
-      "defaultValue": "azuremaps-realtime-tracking",
+      "defaultValue": "azuremaps",
       "maxLength": 11,
       "minLength": 1,
       "metadata": {
@@ -51,8 +51,8 @@
     "iotHubName": "[format('{0}Hub{1}', parameters('projectName'), uniqueString(resourceGroup().id))]",
     "storageAccountName": "[format('{0}{1}', toLower(parameters('projectName')), uniqueString(resourceGroup().id))]",
     "storageEndpoint1": "iotclogs",
-    "routeName1": "[format('{0}route', variables('storageEndpoint1'))]",
-    "storageContainerName": "[format('{0}results', toLower(parameters('projectName')))]"
+    "routeName1": "[format('{0}-route', variables('storageEndpoint1'))]",
+    "storageContainerName": "iotclogs"
   },
   "resources": [
     {
@@ -110,22 +110,22 @@
             {
               "name": "[variables('routeName1')]",
               "source": "DeviceMessages",
-              "condition": "level=\"storage\"",
+              "condition": "true",
               "endpointNames": [
                 "[variables('storageEndpoint1')]"
               ],
               "isEnabled": true
+            },
+            {
+              "name": "fallback-route",
+              "source": "DeviceMessages",
+              "condition": "true",
+              "endpointNames": [
+                "events"
+              ],
+              "isEnabled": true
             }
-          ],
-          "fallbackRoute": {
-            "name": "$fallback",
-            "source": "DeviceMessages",
-            "condition": "true",
-            "endpointNames": [
-              "events"
-            ],
-            "isEnabled": true
-          }
+          ]
         },
         "messagingEndpoints": {
           "fileNotifications": {

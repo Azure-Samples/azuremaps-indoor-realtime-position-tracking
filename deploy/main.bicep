@@ -1,7 +1,7 @@
 @description('Azure Maps real time position tracking demo project.')
 @minLength(1)
 @maxLength(11)
-param projectName string = 'azuremaps-realtime-tracking'
+param projectName string = 'azuremaps'
 
 @description('The Azure region to use for the deployment.')
 param location string = resourceGroup().location
@@ -17,10 +17,9 @@ param d2cPartitions int = 4
 
 var iotHubName = '${projectName}Hub${uniqueString(resourceGroup().id)}'
 var storageAccountName = '${toLower(projectName)}${uniqueString(resourceGroup().id)}'
-//var storageEndpoint = '${projectName}StorageEndpoint'
 var storageEndpoint1 = 'iotclogs'
-var routeName1 = '${storageEndpoint1}route'
-var storageContainerName = '${toLower(projectName)}results'
+var routeName1 = '${storageEndpoint1}-route'
+var storageContainerName = 'iotclogs'
 
 resource storageAccount 'Microsoft.Storage/storageAccounts@2022-05-01' = {
   name: storageAccountName
@@ -73,22 +72,22 @@ resource IoTHub 'Microsoft.Devices/IotHubs@2021-07-02' = {
         {
           name: routeName1
           source: 'DeviceMessages'
-          condition: 'level="storage"'
+          condition: 'true'
           endpointNames: [
             storageEndpoint1
           ]
           isEnabled: true
         }
+        {
+          name: 'fallback-route'
+          source: 'DeviceMessages'
+          condition: 'true'
+          endpointNames: [
+            'events'
+          ]
+          isEnabled: true
+        }
       ]
-      fallbackRoute: {
-        name: '$fallback'
-        source: 'DeviceMessages'
-        condition: 'true'
-        endpointNames: [
-          'events'
-        ]
-        isEnabled: true
-      }
     }
     messagingEndpoints: {
       fileNotifications: {
