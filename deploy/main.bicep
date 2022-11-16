@@ -219,3 +219,12 @@ resource webpubsub 'Microsoft.SignalRService/webPubSub@2021-10-01' = {
     }
   }
 }
+
+// Azure Maps instance
+resource azureMaps 'Microsoft.Maps/accounts@2021-02-01' = {
+  name: '${toLower(projectName)}${uniqueString(resourceGroup().id)}'
+  location: location
+  sku: {
+    name: 'G2'
+  }
+}
