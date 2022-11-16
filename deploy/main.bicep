@@ -3,7 +3,7 @@
 @maxLength(11)
 param projectName string = 'azuremaps'
 
-@description('The Azure region to use for the deployment.')
+@description('The location to use for all deployments.')
 param location string = resourceGroup().location
 
 @description('The SKU to use for the IoT Hub.')
@@ -29,6 +29,32 @@ resource storageAccount 'Microsoft.Storage/storageAccounts@2022-05-01' = {
     name: 'Standard_LRS'
   }
   kind: 'Storage'
+}
+
+resource blobService 'Microsoft.Storage/storageAccounts/blobServices@2022-05-01' = {
+  name: 'default'
+  parent: storageAccount
+  properties: {
+    cors: {
+      corsRules: [
+        {
+          allowedHeaders: [
+            ''
+          ]
+          allowedMethods: [
+            'GET'
+          ]
+          allowedOrigins: [
+            '*'
+          ]
+          exposedHeaders: [
+            ''
+          ]
+          maxAgeInSeconds: 0
+        }
+      ]
+    }
+  }
 }
 
 resource container1 'Microsoft.Storage/storageAccounts/blobServices/containers@2022-05-01' = {
