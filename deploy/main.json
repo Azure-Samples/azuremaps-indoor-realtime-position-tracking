@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.12.40.16777",
-      "templateHash": "1151601335124245090"
+      "templateHash": "5464778252696684365"
     }
   },
   "parameters": {
@@ -364,7 +364,7 @@
       "properties": {
         "forceUpdateTag": "[parameters('utcValue')]",
         "azCliVersion": "2.15.0",
-        "arguments": "[format('{0} {1} {2} {3} {4} {5}', variables('iotHubName'), resourceGroup().name, parameters('location'), resourceId('Microsoft.Web/sites', variables('functionAppName')), variables('storageAccountName'), reference(resourceId('Microsoft.Storage/storageAccounts/blobServices/containers', split(format('{0}/default/{1}', variables('storageAccountName'), variables('storageContainerName2')), '/')[0], split(format('{0}/default/{1}', variables('storageAccountName'), variables('storageContainerName2')), '/')[1], split(format('{0}/default/{1}', variables('storageAccountName'), variables('storageContainerName2')), '/')[2]), '2022-05-01', 'full'))]",
+        "arguments": "[format('{0} {1} {2} {3} {4} {5}', variables('iotHubName'), resourceGroup().name, parameters('location'), resourceId('Microsoft.Web/sites', variables('functionAppName')), variables('storageAccountName'), format('{0}/default/{1}', variables('storageAccountName'), variables('storageContainerName2')))]",
         "primaryScriptUri": "https://raw.githubusercontent.com/Azure-Samples/azuremaps-indoor-realtime-position-tracking/main/deploy/postdeploy.sh",
         "supportingScriptUris": [],
         "timeout": "PT30M",
