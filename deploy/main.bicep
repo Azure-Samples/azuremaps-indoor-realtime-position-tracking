@@ -1,3 +1,4 @@
+// Azure Maps real time position tracking demo project
 @description('Azure Maps real time position tracking demo project.')
 @minLength(1)
 @maxLength(11)
@@ -22,6 +23,7 @@ var routeName1 = '${storageEndpoint1}-route'
 var storageContainerName1 = 'iotclogs'
 var storageContainerName2 = 'public'
 
+// Storage Account
 resource storageAccount 'Microsoft.Storage/storageAccounts@2022-05-01' = {
   name: storageAccountName
   location: location
@@ -77,6 +79,7 @@ resource container2 'Microsoft.Storage/storageAccounts/blobServices/containers@2
   ]
 }
 
+// IoT Hub
 resource IoTHub 'Microsoft.Devices/IotHubs@2021-07-02' = {
   name: iotHubName
   location: location
@@ -146,10 +149,7 @@ resource IoTHub 'Microsoft.Devices/IotHubs@2021-07-02' = {
   }
 }
 
-/* This Bicep file deploys a new instance of Azure Web PubSub service. */
-
-// Parameters
-
+// Web PubSub
 @description('The name for your new Web PubSub instance.')
 var wpsName = '${toLower(projectName)}${uniqueString(resourceGroup().id)}'
 
@@ -237,5 +237,84 @@ resource azureMaps 'Microsoft.Maps/accounts@2021-12-01-preview' = {
         }
       ]
     }
+  }
+}
+
+// Function App
+@description('The name of the function app that you wish to create.')
+var appName = '${toLower(projectName)}${uniqueString(resourceGroup().id)}'
+
+@description('The language worker runtime to load in the function app.')
+var runtime = 'node'
+
+var functionAppName = appName
+var hostingPlanName = appName
+var applicationInsightsName = appName
+var functionWorkerRuntime = runtime
+
+resource hostingPlan 'Microsoft.Web/serverfarms@2021-03-01' = {
+  name: hostingPlanName
+  location: location
+  sku: {
+    name: 'Y1'
+    tier: 'Dynamic'
+  }
+  properties: {}
+}
+
+resource applicationInsights 'Microsoft.Insights/components@2020-02-02' = {
+  name: applicationInsightsName
+  location: location
+  kind: 'web'
+  properties: {
+    Application_Type: 'web'
+    Request_Source: 'rest'
+  }
+}
+
+resource functionApp 'Microsoft.Web/sites@2022-03-01' = {
+  name: functionAppName
+  location: location
+  kind: 'functionapp'
+  identity: {
+    type: 'SystemAssigned'
+  }
+  properties: {
+    serverFarmId: hostingPlan.id
+    siteConfig: {
+      appSettings: [
+        {
+          name: 'AzureWebJobsStorage'
+          value: 'DefaultEndpointsProtocol=https;AccountName=${storageAccountName};EndpointSuffix=${environment().suffixes.storage};AccountKey=${storageAccount.listKeys().keys[0].value}'
+        }
+        {
+          name: 'WEBSITE_CONTENTAZUREFILECONNECTIONSTRING'
+          value: 'DefaultEndpointsProtocol=https;AccountName=${storageAccountName};EndpointSuffix=${environment().suffixes.storage};AccountKey=${storageAccount.listKeys().keys[0].value}'
+        }
+        {
+          name: 'WEBSITE_CONTENTSHARE'
+          value: toLower(functionAppName)
+        }
+        {
+          name: 'FUNCTIONS_EXTENSION_VERSION'
+          value: '~2'
+        }
+        {
+          name: 'WEBSITE_NODE_DEFAULT_VERSION'
+          value: '~10'
+        }
+        {
+          name: 'APPINSIGHTS_INSTRUMENTATIONKEY'
+          value: applicationInsights.properties.InstrumentationKey
+        }
+        {
+          name: 'FUNCTIONS_WORKER_RUNTIME'
+          value: functionWorkerRuntime
+        }
+      ]
+      ftpsState: 'FtpsOnly'
+      minTlsVersion: '1.2'
+    }
+    httpsOnly: true
   }
 }
