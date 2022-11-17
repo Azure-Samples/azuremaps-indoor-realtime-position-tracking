@@ -316,10 +316,11 @@ resource functionApp 'Microsoft.Web/sites@2022-03-01' = {
       minTlsVersion: '1.2'
       cors: {
         allowedOrigins: [
-          '*'
+          'https://*.portal.azure.com'
         ]
         supportCredentials: true
       }
+      webSocketsEnabled: true
     }
     httpsOnly: true
   }

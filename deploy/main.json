@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.12.40.16777",
-      "templateHash": "17944213246418959874"
+      "templateHash": "3658984653069578468"
     }
   },
   "parameters": {
@@ -328,10 +328,11 @@
           "minTlsVersion": "1.2",
           "cors": {
             "allowedOrigins": [
-              "*"
+              "https://*.portal.azure.com"
             ],
             "supportCredentials": true
-          }
+          },
+          "webSocketsEnabled": true
         },
         "httpsOnly": true
       },
