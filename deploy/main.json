@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.12.40.16777",
-      "templateHash": "9008777848627332482"
+      "templateHash": "1151601335124245090"
     }
   },
   "parameters": {
@@ -23,6 +23,13 @@
       "defaultValue": "[resourceGroup().location]",
       "metadata": {
         "description": "The location to use for all deployments."
+      }
+    },
+    "utcValue": {
+      "type": "string",
+      "defaultValue": "[utcNow()]",
+      "metadata": {
+        "description": "Current UTC time"
       }
     }
   },
@@ -341,6 +348,55 @@
         "[resourceId('Microsoft.Web/serverfarms', variables('hostingPlanName'))]",
         "[resourceId('Microsoft.Storage/storageAccounts', variables('storageAccountName'))]"
       ]
+    },
+    {
+      "type": "Microsoft.Resources/deploymentScripts",
+      "apiVersion": "2020-10-01",
+      "name": "PostDeploymentscript",
+      "location": "[parameters('location')]",
+      "kind": "AzureCLI",
+      "identity": {
+        "type": "UserAssigned",
+        "userAssignedIdentities": {
+          "[format('{0}', resourceId('Microsoft.ManagedIdentity/userAssignedIdentities', format('{0}scriptidentity', parameters('projectName'))))]": {}
+        }
+      },
+      "properties": {
+        "forceUpdateTag": "[parameters('utcValue')]",
+        "azCliVersion": "2.15.0",
+        "arguments": "[format('{0} {1} {2} {3} {4} {5}', variables('iotHubName'), resourceGroup().name, parameters('location'), resourceId('Microsoft.Web/sites', variables('functionAppName')), variables('storageAccountName'), reference(resourceId('Microsoft.Storage/storageAccounts/blobServices/containers', split(format('{0}/default/{1}', variables('storageAccountName'), variables('storageContainerName2')), '/')[0], split(format('{0}/default/{1}', variables('storageAccountName'), variables('storageContainerName2')), '/')[1], split(format('{0}/default/{1}', variables('storageAccountName'), variables('storageContainerName2')), '/')[2]), '2022-05-01', 'full'))]",
+        "primaryScriptUri": "https://raw.githubusercontent.com/Azure-Samples/azuremaps-indoor-realtime-position-tracking/main/deploy/postdeploy.sh",
+        "supportingScriptUris": [],
+        "timeout": "PT30M",
+        "cleanupPreference": "OnExpiration",
+        "retentionInterval": "P1D"
+      },
+      "dependsOn": [
+        "[resourceId('Microsoft.Insights/components', variables('applicationInsightsName'))]",
+        "[resourceId('Microsoft.Maps/accounts', format('{0}{1}', toLower(parameters('projectName')), uniqueString(resourceGroup().id)))]",
+        "[resourceId('Microsoft.Storage/storageAccounts/blobServices', variables('storageAccountName'), 'default')]",
+        "[resourceId('Microsoft.Storage/storageAccounts/blobServices/containers', split(format('{0}/default/{1}', variables('storageAccountName'), variables('storageContainerName2')), '/')[0], split(format('{0}/default/{1}', variables('storageAccountName'), variables('storageContainerName2')), '/')[1], split(format('{0}/default/{1}', variables('storageAccountName'), variables('storageContainerName2')), '/')[2])]",
+        "[resourceId('Microsoft.Web/sites', variables('functionAppName'))]",
+        "[resourceId('Microsoft.Web/serverfarms', variables('hostingPlanName'))]",
+        "[resourceId('Microsoft.ManagedIdentity/userAssignedIdentities', format('{0}scriptidentity', parameters('projectName')))]",
+        "[resourceId('Microsoft.Devices/IotHubs', variables('iotHubName'))]",
+        "[resourceId('Microsoft.Storage/storageAccounts', variables('storageAccountName'))]",
+        "[resourceId('Microsoft.SignalRService/webPubSub', variables('wpsName'))]"
+      ]
+    },
+    {
+      "type": "Microsoft.ManagedIdentity/userAssignedIdentities",
+      "apiVersion": "2022-01-31-preview",
+      "name": "[format('{0}scriptidentity', parameters('projectName'))]",
+      "location": "[parameters('location')]"
     }
-  ]
+  ],
+  "outputs": {
+    "outputInfo": {
+      "type": "object",
+      "value": {
+        "webAppURL": "[format('https://{0}.azurewebsites.net/api/index?clientId=blobs_extension', variables('functionAppName'))]"
+      }
+    }
+  }
 }

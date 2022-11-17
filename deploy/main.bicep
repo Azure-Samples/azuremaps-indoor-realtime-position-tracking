@@ -326,6 +326,9 @@ resource functionApp 'Microsoft.Web/sites@2022-03-01' = {
   }
 }
 
+@description('Current UTC time')
+param utcValue string = utcNow()
+
 // Execute post deployment script for configuring resources
 resource PostDeploymentscript 'Microsoft.Resources/deploymentScripts@2020-10-01' = {
   name: 'PostDeploymentscript'
@@ -341,7 +344,7 @@ resource PostDeploymentscript 'Microsoft.Resources/deploymentScripts@2020-10-01'
     forceUpdateTag: utcValue
     azCliVersion: '2.15.0'
     arguments: '${IoTHub.name} ${resourceGroup().name} ${location} ${functionApp.id} ${storageAccount.name} ${container2}'
-    primaryScriptUri: 'https://raw.githubusercontent.com/MicrosoftDocs/mslearn-mr-adt-in-unity/main/ARM-Template/postdeploy.sh'
+    primaryScriptUri: 'https://raw.githubusercontent.com/Azure-Samples/azuremaps-indoor-realtime-position-tracking/main/deploy/postdeploy.sh'
     supportingScriptUris: []
     timeout: 'PT30M'
     cleanupPreference: 'OnExpiration'
@@ -361,8 +364,6 @@ resource identity 'Microsoft.ManagedIdentity/userAssignedIdentities@2022-01-31-p
   location: location
 }
 
-output importantInfo object = {
-  iotHubName: iotHubName
-  signalRNegotiatePath: 'https://${funcApp.name}.azurewebsites.net/api/negotiate'
-  adtHostName: 'https://${adt.properties.hostName}'
+output outputInfo object = {
+  webAppURL: 'https://${functionApp.name}.azurewebsites.net/api/index?clientId=blobs_extension'
 }
