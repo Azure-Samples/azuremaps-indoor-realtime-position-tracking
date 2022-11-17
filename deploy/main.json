@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.12.40.16777",
-      "templateHash": "1424470699454293005"
+      "templateHash": "17944213246418959874"
     }
   },
   "parameters": {
@@ -262,7 +262,7 @@
     },
     {
       "type": "Microsoft.Web/serverfarms",
-      "apiVersion": "2021-03-01",
+      "apiVersion": "2022-03-01",
       "name": "[variables('hostingPlanName')]",
       "location": "[parameters('location')]",
       "sku": {
@@ -309,11 +309,11 @@
             },
             {
               "name": "FUNCTIONS_EXTENSION_VERSION",
-              "value": "~2"
+              "value": "~4"
             },
             {
               "name": "WEBSITE_NODE_DEFAULT_VERSION",
-              "value": "~10"
+              "value": "~16"
             },
             {
               "name": "APPINSIGHTS_INSTRUMENTATIONKEY",
@@ -325,7 +325,13 @@
             }
           ],
           "ftpsState": "FtpsOnly",
-          "minTlsVersion": "1.2"
+          "minTlsVersion": "1.2",
+          "cors": {
+            "allowedOrigins": [
+              "*"
+            ],
+            "supportCredentials": true
+          }
         },
         "httpsOnly": true
       },
