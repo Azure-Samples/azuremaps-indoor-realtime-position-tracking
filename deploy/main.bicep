@@ -252,7 +252,7 @@ var hostingPlanName = appName
 var applicationInsightsName = appName
 var functionWorkerRuntime = runtime
 
-resource hostingPlan 'Microsoft.Web/serverfarms@2021-03-01' = {
+resource hostingPlan 'Microsoft.Web/serverfarms@2022-03-01' = {
   name: hostingPlanName
   location: location
   sku: {
@@ -297,11 +297,11 @@ resource functionApp 'Microsoft.Web/sites@2022-03-01' = {
         }
         {
           name: 'FUNCTIONS_EXTENSION_VERSION'
-          value: '~2'
+          value: '~4'
         }
         {
           name: 'WEBSITE_NODE_DEFAULT_VERSION'
-          value: '~10'
+          value: '~16'
         }
         {
           name: 'APPINSIGHTS_INSTRUMENTATIONKEY'
@@ -314,6 +314,12 @@ resource functionApp 'Microsoft.Web/sites@2022-03-01' = {
       ]
       ftpsState: 'FtpsOnly'
       minTlsVersion: '1.2'
+      cors: {
+        allowedOrigins: [
+          '*'
+        ]
+        supportCredentials: true
+      }
     }
     httpsOnly: true
   }
