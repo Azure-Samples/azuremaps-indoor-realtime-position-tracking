@@ -325,3 +325,44 @@ resource functionApp 'Microsoft.Web/sites@2022-03-01' = {
     httpsOnly: true
   }
 }
+
+// Execute post deployment script for configuring resources
+resource PostDeploymentscript 'Microsoft.Resources/deploymentScripts@2020-10-01' = {
+  name: 'PostDeploymentscript'
+  location: location
+  kind: 'AzureCLI'
+  identity: {
+    type: 'UserAssigned'
+    userAssignedIdentities: {
+      '${identity.id}': {}
+    }
+  }
+    properties: {
+    forceUpdateTag: utcValue
+    azCliVersion: '2.15.0'
+    arguments: '${IoTHub.name} ${resourceGroup().name} ${location} ${functionApp.id} ${storageAccount.name} ${container2}'
+    primaryScriptUri: 'https://raw.githubusercontent.com/MicrosoftDocs/mslearn-mr-adt-in-unity/main/ARM-Template/postdeploy.sh'
+    supportingScriptUris: []
+    timeout: 'PT30M'
+    cleanupPreference: 'OnExpiration'
+    retentionInterval: 'P1D'
+  }
+  dependsOn: [
+    blobService
+    webpubsub
+    azureMaps
+    hostingPlan
+    applicationInsights
+  ]
+}
+
+resource identity 'Microsoft.ManagedIdentity/userAssignedIdentities@2022-01-31-preview' = {
+  name: '${projectName}scriptidentity'
+  location: location
+}
+
+output importantInfo object = {
+  iotHubName: iotHubName
+  signalRNegotiatePath: 'https://${funcApp.name}.azurewebsites.net/api/negotiate'
+  adtHostName: 'https://${adt.properties.hostName}'
+}
