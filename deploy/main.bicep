@@ -367,9 +367,23 @@ resource PostDeploymentscript 'Microsoft.Resources/deploymentScripts@2020-10-01'
   ]
 }
 
-resource identity 'Microsoft.ManagedIdentity/userAssignedIdentities@2022-01-31-preview' existing = {
-  name: '${projectName}scriptidentity'
-  scope: resourceGroup(resourceGroup().name)
+var identityName = '${projectName}scriptidentity'
+var rgRoleDefinitionId = resourceId('Microsoft.Authorization/roleDefinitions', '8e3af657-a8ff-443c-a75c-2fe8c4bcb635')
+var rgRoleDefinitionName = guid(identity.id, rgRoleDefinitionId, resourceGroup().id)
+
+resource identity 'Microsoft.ManagedIdentity/userAssignedIdentities@2018-11-30' = {
+  name: identityName
+  location: location
+}
+
+// add RBAC role to resource group - 
+resource rgroledef 'Microsoft.Authorization/roleAssignments@2018-09-01-preview' = {
+  name: rgRoleDefinitionName
+  properties: {
+    roleDefinitionId: rgRoleDefinitionId
+    principalId: reference(identityName).principalId
+    principalType: 'ServicePrincipal'
+  }
 }
 
 output webAppURL string = 'https://${functionApp.name}.azurewebsites.net/api/index?clientId=blobs_extension'

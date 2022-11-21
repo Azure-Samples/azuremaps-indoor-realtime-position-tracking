@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.12.40.16777",
-      "templateHash": "13853150078381370804"
+      "templateHash": "4625985828602187485"
     }
   },
   "parameters": {
@@ -53,7 +53,10 @@
     "hostingPlanName": "[variables('appName')]",
     "applicationInsightsName": "[variables('appName')]",
     "functionWorkerRuntime": "[variables('runtime')]",
-    "scriptOutput": ""
+    "scriptOutput": "",
+    "identityName": "[format('{0}scriptidentity', parameters('projectName'))]",
+    "rgRoleDefinitionId": "[resourceId('Microsoft.Authorization/roleDefinitions', '8e3af657-a8ff-443c-a75c-2fe8c4bcb635')]",
+    "rgRoleDefinitionName": "[guid(resourceId('Microsoft.ManagedIdentity/userAssignedIdentities', variables('identityName')), variables('rgRoleDefinitionId'), resourceGroup().id)]"
   },
   "resources": [
     {
@@ -359,7 +362,7 @@
       "identity": {
         "type": "UserAssigned",
         "userAssignedIdentities": {
-          "[format('{0}', extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', subscription().subscriptionId, resourceGroup().name), 'Microsoft.ManagedIdentity/userAssignedIdentities', format('{0}scriptidentity', parameters('projectName'))))]": {}
+          "[format('{0}', resourceId('Microsoft.ManagedIdentity/userAssignedIdentities', variables('identityName')))]": {}
         }
       },
       "properties": {
@@ -385,9 +388,29 @@
         "[resourceId('Microsoft.Storage/storageAccounts/blobServices/containers', split(format('{0}/default/{1}', variables('storageAccountName'), variables('storageContainerName2')), '/')[0], split(format('{0}/default/{1}', variables('storageAccountName'), variables('storageContainerName2')), '/')[1], split(format('{0}/default/{1}', variables('storageAccountName'), variables('storageContainerName2')), '/')[2])]",
         "[resourceId('Microsoft.Web/sites', variables('functionAppName'))]",
         "[resourceId('Microsoft.Web/serverfarms', variables('hostingPlanName'))]",
+        "[resourceId('Microsoft.ManagedIdentity/userAssignedIdentities', variables('identityName'))]",
         "[resourceId('Microsoft.Devices/IotHubs', variables('iotHubName'))]",
         "[resourceId('Microsoft.Storage/storageAccounts', variables('storageAccountName'))]",
         "[resourceId('Microsoft.SignalRService/webPubSub', variables('wpsName'))]"
+      ]
+    },
+    {
+      "type": "Microsoft.ManagedIdentity/userAssignedIdentities",
+      "apiVersion": "2018-11-30",
+      "name": "[variables('identityName')]",
+      "location": "[parameters('location')]"
+    },
+    {
+      "type": "Microsoft.Authorization/roleAssignments",
+      "apiVersion": "2018-09-01-preview",
+      "name": "[variables('rgRoleDefinitionName')]",
+      "properties": {
+        "roleDefinitionId": "[variables('rgRoleDefinitionId')]",
+        "principalId": "[reference(variables('identityName')).principalId]",
+        "principalType": "ServicePrincipal"
+      },
+      "dependsOn": [
+        "[resourceId('Microsoft.ManagedIdentity/userAssignedIdentities', variables('identityName'))]"
       ]
     }
   ],
