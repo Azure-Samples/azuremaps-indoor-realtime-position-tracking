@@ -14,14 +14,18 @@ echo "storagename: ${storagename}"
 echo "containername: ${containername}"
 
 echo "Installing azure cli extension..."
-az config set extension.use_dynamic_install=yes_without_prompt
-az extension add --name azure-iot -y
+outputJSON=$(az config set extension.use_dynamic_install=yes_without_prompt)
+echo $outputJSON
+
+outputJSON=$(az extension add --name azure-iot -y)
+echo $outputJSON
 
 echo "Retrieving files..."
-git clone https://github.com/Azure-Samples/azuremaps-indoor-realtime-position-tracking.git
+outputJSON=$(git clone https://github.com/Azure-Samples/azuremaps-indoor-realtime-position-tracking.git)
+echo $outputJSON
 
 echo "Retrieving and uploading public files to blob storage..."
 outputJSON=$(az storage blob upload-batch --account-name $storagename -d $containername -s "./src/public")
-echo $outputJSON > $scriptOutput
+echo $outputJSON
 
 echo "Post deployment script completed!"

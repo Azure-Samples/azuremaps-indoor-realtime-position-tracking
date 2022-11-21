@@ -350,13 +350,6 @@ resource PostDeploymentscript 'Microsoft.Resources/deploymentScripts@2020-10-01'
     timeout: 'PT30M'
     cleanupPreference: 'OnExpiration'
     retentionInterval: 'P1D'
-    environmentVariables: [
-      {
-        name: 'scriptOutput'
-        value: scriptOutput
-      }
-
-    ]
   }
   dependsOn: [
     blobService
@@ -387,4 +380,3 @@ resource rgroledef 'Microsoft.Authorization/roleAssignments@2018-09-01-preview' 
 }
 
 output webAppURL string = 'https://${functionApp.name}.azurewebsites.net/api/index?clientId=blobs_extension'
-output scriptOutputStr string = PostDeploymentscript.properties.outputs.scriptOutput
