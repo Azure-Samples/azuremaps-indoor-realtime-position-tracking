@@ -328,6 +328,7 @@ resource functionApp 'Microsoft.Web/sites@2022-03-01' = {
 
 @description('Current UTC time')
 param utcValue string = utcNow()
+var scriptOutput = ''
 
 // Execute post deployment script for configuring resources
 resource PostDeploymentscript 'Microsoft.Resources/deploymentScripts@2020-10-01' = {
@@ -340,7 +341,7 @@ resource PostDeploymentscript 'Microsoft.Resources/deploymentScripts@2020-10-01'
       '${identity.id}': {}
     }
   }
-    properties: {
+  properties: {
     forceUpdateTag: utcValue
     azCliVersion: '2.15.0'
     arguments: '${IoTHub.name} ${resourceGroup().name} ${location} ${functionApp.id} ${storageAccount.name} ${container2.name}'
@@ -349,6 +350,13 @@ resource PostDeploymentscript 'Microsoft.Resources/deploymentScripts@2020-10-01'
     timeout: 'PT30M'
     cleanupPreference: 'OnExpiration'
     retentionInterval: 'P1D'
+    environmentVariables: [
+      {
+        name: 'scriptOutput'
+        value: scriptOutput
+      }
+
+    ]
   }
   dependsOn: [
     blobService
@@ -359,11 +367,10 @@ resource PostDeploymentscript 'Microsoft.Resources/deploymentScripts@2020-10-01'
   ]
 }
 
-resource identity 'Microsoft.ManagedIdentity/userAssignedIdentities@2022-01-31-preview' = {
+resource identity 'Microsoft.ManagedIdentity/userAssignedIdentities@2022-01-31-preview' existing = {
   name: '${projectName}scriptidentity'
-  location: location
+  scope: resourceGroup(resourceGroup().name)
 }
 
-output outputInfo object = {
-  webAppURL: 'https://${functionApp.name}.azurewebsites.net/api/index?clientId=blobs_extension'
-}
+output webAppURL string = 'https://${functionApp.name}.azurewebsites.net/api/index?clientId=blobs_extension'
+output scriptOutputStr string = PostDeploymentscript.properties.outputs.scriptOutput

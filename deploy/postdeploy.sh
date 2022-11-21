@@ -21,6 +21,7 @@ echo "Retrieving files..."
 git clone https://github.com/Azure-Samples/azuremaps-indoor-realtime-position-tracking.git
 
 echo "Retrieving and uploading public files to blob storage..."
-az storage blob upload-batch --account-name $storagename -d $containername -s "./src/public"
+outputJSON=$(az storage blob upload-batch --account-name $storagename -d $containername -s "./src/public")
+echo $outputJSON > $scriptOutput
 
 echo "Post deployment script completed!"
