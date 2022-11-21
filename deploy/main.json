@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.12.40.16777",
-      "templateHash": "11776162791945975241"
+      "templateHash": "7354318952748874039"
     }
   },
   "parameters": {
@@ -53,7 +53,6 @@
     "hostingPlanName": "[variables('appName')]",
     "applicationInsightsName": "[variables('appName')]",
     "functionWorkerRuntime": "[variables('runtime')]",
-    "scriptOutput": "",
     "identityName": "[format('{0}scriptidentity', parameters('projectName'))]",
     "rgRoleDefinitionId": "[resourceId('Microsoft.Authorization/roleDefinitions', '8e3af657-a8ff-443c-a75c-2fe8c4bcb635')]",
     "rgRoleDefinitionName": "[guid(resourceId('Microsoft.ManagedIdentity/userAssignedIdentities', variables('identityName')), variables('rgRoleDefinitionId'), resourceGroup().id)]"

@@ -328,7 +328,6 @@ resource functionApp 'Microsoft.Web/sites@2022-03-01' = {
 
 @description('Current UTC time')
 param utcValue string = utcNow()
-var scriptOutput = ''
 
 // Execute post deployment script for configuring resources
 resource PostDeploymentscript 'Microsoft.Resources/deploymentScripts@2020-10-01' = {
