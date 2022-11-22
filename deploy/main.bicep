@@ -329,7 +329,7 @@ resource functionApp 'Microsoft.Web/sites@2022-03-01' = {
 @description('Current UTC time')
 param utcValue string = utcNow()
 var blobStorageConnectionString = 'DefaultEndpointsProtocol=https;AccountName=${storageAccount.name};EndpointSuffix=${environment().suffixes.storage};AccountKey=${listKeys(storageAccount.id, storageAccount.apiVersion).keys[0].value}'
-var eventHubName = IoTHub.properties.eventHubEndpoints.events.endpoint
+var eventHubName = IoTHub.properties.eventHubEndpoints.events.path
 
 // Execute post deployment script for configuring resources
 resource PostDeploymentscript 'Microsoft.Resources/deploymentScripts@2020-10-01' = {
