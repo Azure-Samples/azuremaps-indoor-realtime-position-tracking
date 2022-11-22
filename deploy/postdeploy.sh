@@ -37,10 +37,10 @@ echo "Retrieving and uploading public files to blob storage..."
 az storage blob upload-batch --connection-string $storagecs --account-name $storagename -d $containername -s "./azuremaps-indoor-realtime-position-tracking/src/public"
 
 echo "Create zip file for Function App deployment"
-cd /azuremaps-indoor-realtime-position-tracking/src/realtime-azuremaps-update-iothubdemo/AzM_Web_PubSub_Demo-v02/AzM_Web_PubSub_Demo
-zip functionapp.zip -r "./"
+cd "./azuremaps-indoor-realtime-position-tracking/src/realtime-azuremaps-update-iothubdemo/AzM_Web_PubSub_Demo-v02/AzM_Web_PubSub_Demo"
+zip ../functionapp.zip -r "./*"
 
 echo "Deploy Function App"
-az functionapp deployment source config-zip -g $rgname -n $appname --src "./functionapp.zip"
+az functionapp deployment source config-zip -g $rgname -n $appname --src "../functionapp.zip"
 
 echo "Post deployment script completed!"
