@@ -1,19 +1,15 @@
 echo "Post deployment script starting..."
 
-iothubname=$1
+appname=$1
 rgname=$2
-location=$3
-funcappid=$4
-storagename=$5
-containername=$6
-storagecs=$7
-eventhubname=$8
-azuremapskey=$9
-blobstorageurl=$10
+storagename=$3
+containername=$4
+storagecs=$5
+eventhubname=$6
+azuremapskey=$7
+blobstoragesuffix=$8
 
-echo "iothubname: ${iothubname}"
-echo "location: ${location}"
-echo "funcappid: ${funcappid}"
+echo "rgname: $rgname"
 echo "storagename: ${storagename}"
 echo "containername: ${containername}"
 echo "storagecs: ${storagecs}"
@@ -35,9 +31,15 @@ echo "Update Azure Maps key in index.html"
 sed -i "s/<YOUR-AZURE-MAPS-KEY>/$azuremapskey/g" "./azuremaps-indoor-realtime-position-tracking/src/realtime-azuremaps-update-iothubdemo/AzM_Web_PubSub_Demo-v02/AzM_Web_PubSub_Demo/index.html"
 
 echo "Update blob storage URL in index.html"
-sed -i "s/<YOUR-BLOB-STORAGE-URL>/https:\/\/$storagename.blob.$blobstoragesuffix\//g" "./azuremaps-indoor-realtime-position-tracking/src/realtime-azuremaps-update-iothubdemo/AzM_Web_PubSub_Demo-v02/AzM_Web_PubSub_Demo/index.html"
+sed -i "s/<YOUR-BLOB-STORAGE-URL>/https:\/\/$storagename.blob.$blobstoragesuffix/g" "./azuremaps-indoor-realtime-position-tracking/src/realtime-azuremaps-update-iothubdemo/AzM_Web_PubSub_Demo-v02/AzM_Web_PubSub_Demo/index.html"
 
 echo "Retrieving and uploading public files to blob storage..."
 az storage blob upload-batch --connection-string $storagecs --account-name $storagename -d $containername -s "./azuremaps-indoor-realtime-position-tracking/src/public"
+
+echo "Create zip file for Function App deployment"
+zip functionapp.zip -r "./azuremaps-indoor-realtime-position-tracking/src/realtime-azuremaps-update-iothubdemo/AzM_Web_PubSub_Demo-v02/AzM_Web_PubSub_Demo"
+
+echo "Deploy Function App"
+az functionapp deployment source config-zip -g $rgname -n $appname --src "./functionapp.zip"
 
 echo "Post deployment script completed!"

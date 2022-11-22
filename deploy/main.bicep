@@ -337,7 +337,6 @@ param utcValue string = utcNow()
 var blobStorageConnectionString = 'DefaultEndpointsProtocol=https;AccountName=${storageAccount.name};EndpointSuffix=${environment().suffixes.storage};AccountKey=${listKeys(storageAccount.id, storageAccount.apiVersion).keys[0].value}'
 var eventHubName = IoTHub.properties.eventHubEndpoints.events.path
 var azureMapsKey = listkeys(azureMaps.id, azureMaps.apiVersion).primaryKey
-var blobStorageSuffix = environment().suffixes.storage
 
 // Execute post deployment script for configuring resources
 resource PostDeploymentscript 'Microsoft.Resources/deploymentScripts@2020-10-01' = {
@@ -353,7 +352,7 @@ resource PostDeploymentscript 'Microsoft.Resources/deploymentScripts@2020-10-01'
   properties: {
     forceUpdateTag: utcValue
     azCliVersion: '2.15.0'
-    arguments: '${IoTHub.name} ${resourceGroup().name} ${location} ${functionApp.id} ${storageAccount.name} ${storageContainerName2} ${blobStorageConnectionString} ${eventHubName} ${azureMapsKey} ${blobStorageSuffix}'
+    arguments: '${functionApp.name} ${resourceGroup().name} ${storageAccount.name} ${storageContainerName2} ${blobStorageConnectionString} ${eventHubName} ${azureMapsKey} ${environment().suffixes.storage}'
     primaryScriptUri: 'https://raw.githubusercontent.com/Azure-Samples/azuremaps-indoor-realtime-position-tracking/main/deploy/postdeploy.sh'
     supportingScriptUris: []
     timeout: 'PT30M'
