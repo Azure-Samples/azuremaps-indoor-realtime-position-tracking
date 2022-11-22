@@ -357,23 +357,36 @@ resource PostDeploymentscript 'Microsoft.Resources/deploymentScripts@2020-10-01'
     azureMaps
     hostingPlan
     applicationInsights
+    rgroledef
   ]
 }
 
 var identityName = '${projectName}scriptidentity'
 var rgRoleDefinitionId = resourceId('Microsoft.Authorization/roleDefinitions', '8e3af657-a8ff-443c-a75c-2fe8c4bcb635')
 var rgRoleDefinitionName = guid(identity.id, rgRoleDefinitionId, resourceGroup().id)
+var storageRoleDefinitionId = resourceId('Microsoft.Authorization/roleDefinitions', 'ba92f5b4-2d11-453d-a403-e96b0029c9fe')
+var storageRoleDefinitionName = guid(identity.id, storageRoleDefinitionId, resourceGroup().id)
 
 resource identity 'Microsoft.ManagedIdentity/userAssignedIdentities@2018-11-30' = {
   name: identityName
   location: location
 }
 
-// add RBAC role to resource group - 
+// add RBAC role to resource group
 resource rgroledef 'Microsoft.Authorization/roleAssignments@2018-09-01-preview' = {
   name: rgRoleDefinitionName
   properties: {
     roleDefinitionId: rgRoleDefinitionId
+    principalId: reference(identityName).principalId
+    principalType: 'ServicePrincipal'
+  }
+}
+
+// add "Storage Blob Data Contributor" role to RG for our deployment
+resource storageroledef 'Microsoft.Authorization/roleAssignments@2018-09-01-preview' = {
+  name: storageRoleDefinitionName
+  properties: {
+    roleDefinitionId: storageRoleDefinitionId
     principalId: reference(identityName).principalId
     principalType: 'ServicePrincipal'
   }

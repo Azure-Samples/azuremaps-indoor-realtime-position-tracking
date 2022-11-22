@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.12.40.16777",
-      "templateHash": "6530602642748283123"
+      "templateHash": "16081685245183171652"
     }
   },
   "parameters": {
@@ -55,7 +55,9 @@
     "functionWorkerRuntime": "[variables('runtime')]",
     "identityName": "[format('{0}scriptidentity', parameters('projectName'))]",
     "rgRoleDefinitionId": "[resourceId('Microsoft.Authorization/roleDefinitions', '8e3af657-a8ff-443c-a75c-2fe8c4bcb635')]",
-    "rgRoleDefinitionName": "[guid(resourceId('Microsoft.ManagedIdentity/userAssignedIdentities', variables('identityName')), variables('rgRoleDefinitionId'), resourceGroup().id)]"
+    "rgRoleDefinitionName": "[guid(resourceId('Microsoft.ManagedIdentity/userAssignedIdentities', variables('identityName')), variables('rgRoleDefinitionId'), resourceGroup().id)]",
+    "storageRoleDefinitionId": "[resourceId('Microsoft.Authorization/roleDefinitions', 'ba92f5b4-2d11-453d-a403-e96b0029c9fe')]",
+    "storageRoleDefinitionName": "[guid(resourceId('Microsoft.ManagedIdentity/userAssignedIdentities', variables('identityName')), variables('storageRoleDefinitionId'), resourceGroup().id)]"
   },
   "resources": [
     {
@@ -382,6 +384,7 @@
         "[resourceId('Microsoft.Web/serverfarms', variables('hostingPlanName'))]",
         "[resourceId('Microsoft.ManagedIdentity/userAssignedIdentities', variables('identityName'))]",
         "[resourceId('Microsoft.Devices/IotHubs', variables('iotHubName'))]",
+        "[resourceId('Microsoft.Authorization/roleAssignments', variables('rgRoleDefinitionName'))]",
         "[resourceId('Microsoft.Storage/storageAccounts', variables('storageAccountName'))]",
         "[resourceId('Microsoft.SignalRService/webPubSub', variables('wpsName'))]"
       ]
@@ -398,6 +401,19 @@
       "name": "[variables('rgRoleDefinitionName')]",
       "properties": {
         "roleDefinitionId": "[variables('rgRoleDefinitionId')]",
+        "principalId": "[reference(variables('identityName')).principalId]",
+        "principalType": "ServicePrincipal"
+      },
+      "dependsOn": [
+        "[resourceId('Microsoft.ManagedIdentity/userAssignedIdentities', variables('identityName'))]"
+      ]
+    },
+    {
+      "type": "Microsoft.Authorization/roleAssignments",
+      "apiVersion": "2018-09-01-preview",
+      "name": "[variables('storageRoleDefinitionName')]",
+      "properties": {
+        "roleDefinitionId": "[variables('storageRoleDefinitionId')]",
         "principalId": "[reference(variables('identityName')).principalId]",
         "principalType": "ServicePrincipal"
       },
