@@ -336,7 +336,7 @@ resource functionApp 'Microsoft.Web/sites@2022-03-01' = {
 param utcValue string = utcNow()
 var blobStorageConnectionString = 'DefaultEndpointsProtocol=https;AccountName=${storageAccount.name};EndpointSuffix=${environment().suffixes.storage};AccountKey=${listKeys(storageAccount.id, storageAccount.apiVersion).keys[0].value}'
 var eventHubName = IoTHub.properties.eventHubEndpoints.events.path
-var azureMapsKey = listkeys(azureMaps.id, azureMaps.apiVersion).keys[0].value
+var azureMapsKey = listkeys(azureMaps.id, azureMaps.apiVersion).primaryKey
 var blobStorageURL = 'https://${storageAccount.name}.blob.${environment().suffixes.storage}/'
 
 // Execute post deployment script for configuring resources
