@@ -7,6 +7,7 @@ funcappid=$4
 storagename=$5
 containername=$6
 storagecs=$7
+eventhubname=$8
 
 echo "iot hub name: ${iothubname}"
 echo "location: ${location}"
@@ -14,6 +15,7 @@ echo "funcappid: ${funcappid}"
 echo "storagename: ${storagename}"
 echo "containername: ${containername}"
 echo "storagecs: ${storagecs}"
+echo "eventhubname: ${eventhubname}"
 
 echo "Installing azure cli extension..."
 az config set extension.use_dynamic_install=yes_without_prompt
@@ -21,6 +23,9 @@ az extension add --name azure-iot -y
 
 echo "Retrieving files..."
 git clone https://github.com/Azure-Samples/azuremaps-indoor-realtime-position-tracking.git
+
+echo "Update event hub name binding for notification function"
+sed -i 's/<YOUR-EVENT-HUB-NAME>/test/g' "./src/realtime-azuremaps-update-iothubdemo/AzM_Web_PubSub_Demo-v02/AzM_Web_PubSub_Demo/notification/function.json"
 
 echo "Retrieving and uploading public files to blob storage..."
 az storage blob upload-batch --connection-string $storagecs --account-name $storagename -d $containername -s "./src/public"
