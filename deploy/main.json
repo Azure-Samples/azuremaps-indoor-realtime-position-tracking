@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.12.40.16777",
-      "templateHash": "8367462986850058180"
+      "templateHash": "1558374724209467417"
     }
   },
   "parameters": {
@@ -53,7 +53,7 @@
     "hostingPlanName": "[variables('appName')]",
     "applicationInsightsName": "[variables('appName')]",
     "functionWorkerRuntime": "[variables('runtime')]",
-    "blobStorageURL": "[format('https://{0}.blob.{1}/', variables('storageAccountName'), environment().suffixes.storage)]",
+    "blobStorageSuffix": "[environment().suffixes.storage]",
     "identityName": "[format('{0}scriptidentity', parameters('projectName'))]",
     "rgRoleDefinitionId": "[resourceId('Microsoft.Authorization/roleDefinitions', '8e3af657-a8ff-443c-a75c-2fe8c4bcb635')]",
     "rgRoleDefinitionName": "[guid(resourceId('Microsoft.ManagedIdentity/userAssignedIdentities', variables('identityName')), variables('rgRoleDefinitionId'), resourceGroup().id)]",
@@ -375,7 +375,7 @@
       "properties": {
         "forceUpdateTag": "[parameters('utcValue')]",
         "azCliVersion": "2.15.0",
-        "arguments": "[format('{0} {1} {2} {3} {4} {5} {6} {7} {8} {9}', variables('iotHubName'), resourceGroup().name, parameters('location'), resourceId('Microsoft.Web/sites', variables('functionAppName')), variables('storageAccountName'), variables('storageContainerName2'), format('DefaultEndpointsProtocol=https;AccountName={0};EndpointSuffix={1};AccountKey={2}', variables('storageAccountName'), environment().suffixes.storage, listKeys(resourceId('Microsoft.Storage/storageAccounts', variables('storageAccountName')), '2022-05-01').keys[0].value), reference(resourceId('Microsoft.Devices/IotHubs', variables('iotHubName')), '2021-07-02').eventHubEndpoints.events.path, listkeys(resourceId('Microsoft.Maps/accounts', format('{0}{1}', toLower(parameters('projectName')), uniqueString(resourceGroup().id))), '2021-12-01-preview').primaryKey, variables('blobStorageURL'))]",
+        "arguments": "[format('{0} {1} {2} {3} {4} {5} {6} {7} {8} {9}', variables('iotHubName'), resourceGroup().name, parameters('location'), resourceId('Microsoft.Web/sites', variables('functionAppName')), variables('storageAccountName'), variables('storageContainerName2'), format('DefaultEndpointsProtocol=https;AccountName={0};EndpointSuffix={1};AccountKey={2}', variables('storageAccountName'), environment().suffixes.storage, listKeys(resourceId('Microsoft.Storage/storageAccounts', variables('storageAccountName')), '2022-05-01').keys[0].value), reference(resourceId('Microsoft.Devices/IotHubs', variables('iotHubName')), '2021-07-02').eventHubEndpoints.events.path, listkeys(resourceId('Microsoft.Maps/accounts', format('{0}{1}', toLower(parameters('projectName')), uniqueString(resourceGroup().id))), '2021-12-01-preview').primaryKey, variables('blobStorageSuffix'))]",
         "primaryScriptUri": "https://raw.githubusercontent.com/Azure-Samples/azuremaps-indoor-realtime-position-tracking/main/deploy/postdeploy.sh",
         "supportingScriptUris": [],
         "timeout": "PT30M",

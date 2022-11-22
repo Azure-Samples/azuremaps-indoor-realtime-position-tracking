@@ -11,7 +11,7 @@ eventhubname=$8
 azuremapskey=$9
 blobstorageurl=$10
 
-echo "iot hub name: ${iothubname}"
+echo "iothubname: ${iothubname}"
 echo "location: ${location}"
 echo "funcappid: ${funcappid}"
 echo "storagename: ${storagename}"
@@ -19,7 +19,7 @@ echo "containername: ${containername}"
 echo "storagecs: ${storagecs}"
 echo "eventhubname: ${eventhubname}"
 echo "azuremapskey: ${azuremapskey}"
-echo "blobstorageurl: ${blobstorageurl}"
+echo "blobstoragesuffix: ${blobstoragesuffix}"
 
 echo "Installing azure cli extension..."
 az config set extension.use_dynamic_install=yes_without_prompt
@@ -35,9 +35,9 @@ echo "Update Azure Maps key in index.html"
 sed -i "s/<YOUR-AZURE-MAPS-KEY>/$azuremapskey/g" "./azuremaps-indoor-realtime-position-tracking/src/realtime-azuremaps-update-iothubdemo/AzM_Web_PubSub_Demo-v02/AzM_Web_PubSub_Demo/index.html"
 
 echo "Update blob storage URL in index.html"
-sed -i "s/<YOUR-BLOB-STORAGE-URL>/$blobstorageurl/g" "./azuremaps-indoor-realtime-position-tracking/src/realtime-azuremaps-update-iothubdemo/AzM_Web_PubSub_Demo-v02/AzM_Web_PubSub_Demo/index.html"
+sed -i "s/<YOUR-BLOB-STORAGE-URL>/https:\/\/$storagename.blob.$blobstoragesuffix\//g" "./azuremaps-indoor-realtime-position-tracking/src/realtime-azuremaps-update-iothubdemo/AzM_Web_PubSub_Demo-v02/AzM_Web_PubSub_Demo/index.html"
 
 echo "Retrieving and uploading public files to blob storage..."
-#az storage blob upload-batch --connection-string $storagecs --account-name $storagename -d $containername -s "./azuremaps-indoor-realtime-position-tracking/src/public"
+az storage blob upload-batch --connection-string $storagecs --account-name $storagename -d $containername -s "./azuremaps-indoor-realtime-position-tracking/src/public"
 
 echo "Post deployment script completed!"
