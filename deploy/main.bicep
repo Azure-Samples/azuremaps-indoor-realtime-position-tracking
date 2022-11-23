@@ -352,7 +352,7 @@ resource PostDeploymentscript 'Microsoft.Resources/deploymentScripts@2020-10-01'
   properties: {
     forceUpdateTag: utcValue
     azCliVersion: '2.15.0'
-    arguments: '${functionApp.name} ${resourceGroup().name} ${storageAccount.name} ${storageContainerName2} ${blobStorageConnectionString} ${eventHubName} ${azureMapsKey} ${environment().suffixes.storage}'
+    arguments: '${functionApp.name} ${resourceGroup().name} ${storageAccount.name} ${storageContainerName2} ${blobStorageConnectionString} ${eventHubName} ${azureMapsKey} ${environment().suffixes.storage} ${iotHubName}'
     primaryScriptUri: 'https://raw.githubusercontent.com/Azure-Samples/azuremaps-indoor-realtime-position-tracking/main/deploy/postdeploy.sh'
     supportingScriptUris: []
     timeout: 'PT30M'
