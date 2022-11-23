@@ -9,6 +9,7 @@ eventhubname=$6
 azuremapskey=$7
 blobstoragesuffix=$8
 iothubname=$9
+devicename=$10
 
 echo "rgname: $rgname"
 echo "storagename: ${storagename}"
@@ -18,6 +19,7 @@ echo "eventhubname: ${eventhubname}"
 echo "azuremapskey: ${azuremapskey}"
 echo "blobstoragesuffix: ${blobstoragesuffix}"
 echo "iothubname: ${iothubname}"
+echo "devicename: ${devicename}"
 
 echo "Installing azure cli extension..."
 az config set extension.use_dynamic_install=yes_without_prompt
@@ -40,14 +42,14 @@ az storage blob upload-batch --connection-string $storagecs --account-name $stor
 
 echo "Create zip file for Function App deployment"
 cd ./azuremaps-indoor-realtime-position-tracking/src/realtime-azuremaps-update-iothubdemo/AzM_Web_PubSub_Demo-v02/AzM_Web_PubSub_Demo
-zip -r functionapp.zip *.*
+zip -r functionapp.zip *.* index negotiate notification processdata node_modules bin obj
 
 echo "Deploy Function App"
 az functionapp deployment source config-zip -g $rgname -n $appname --src functionapp.zip
 
 echo "Add myPhone device to IoT Hub and get connection string"
-az iot hub device-identity create -n $iothubname -d "myPhone" --ee
-myDeviceConnectionString=$(az iot hub device-identity connection-string show --device-id "myPhone")
-echo $myDeviceConnectionString
+az iot hub device-identity create --hub-name $iothubname --device-id $devicename --resource-group $rgname
+deviceNameConnectionString=$(az iot hub device-identity connection-string show --hub-name $iothubname --device-id $devicename --resource-group $rgname)
+echo $deviceNameConnectionString
 
 echo "Post deployment script completed!"
