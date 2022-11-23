@@ -25,6 +25,9 @@ echo "Installing azure cli extension..."
 az config set extension.use_dynamic_install=yes_without_prompt
 az extension add --name azure-iot -y
 
+echo "Enabling remote build"
+az functionapp config appsettings set -g $rgname -n $appname --settings SCM_DO_BUILD_DURING_DEPLOYMENT=true
+
 echo "Retrieving files..."
 git clone https://github.com/Azure-Samples/azuremaps-indoor-realtime-position-tracking.git
 
@@ -42,14 +45,10 @@ az storage blob upload-batch --connection-string $storagecs --account-name $stor
 
 echo "Create zip file for Function App deployment"
 cd ./azuremaps-indoor-realtime-position-tracking/src/realtime-azuremaps-update-iothubdemo/AzM_Web_PubSub_Demo-v02/AzM_Web_PubSub_Demo
-npm install index
-npm install negotiate
-npm install notification
-npm install processdata
-zip -r functionapp.zip *.* index negotiate notification processdata node_modules
+zip -r functionapp.zip *.* index negotiate notification processdata
 
 echo "Deploy Function App"
-az functionapp deployment source config-zip -g $rgname -n $appname --src functionapp.zip
+az functionapp deployment source config-zip -g $rgname -n $appname --src functionapp.zip --build-remote true
 
 echo "Add myPhone device to IoT Hub"
 az iot hub device-identity create --hub-name $iothubname --device-id $devicename --resource-group $rgname
