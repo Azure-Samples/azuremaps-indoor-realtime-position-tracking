@@ -435,7 +435,7 @@
     },
     "deviceConnectionString": {
       "type": "string",
-      "value": "[format('HostName={0}.azure-devices.net;DeviceId={1};SharedAccessKey={2}', variables('iotHubName'), variables('deviceName'), listKeys(resourceId('Microsoft.Devices/IotHubs', variables('iotHubName')), '2021-07-02').value)]"
+      "value": "[format('HostName={0}.azure-devices.net;DeviceId={1};SharedAccessKey={2}', variables('iotHubName'), variables('deviceName'), listkeys(resourceId('Microsoft.Devices/IotHubs', variables('iotHubName')), '2021-07-02').value)]"
     }
   }
 }
