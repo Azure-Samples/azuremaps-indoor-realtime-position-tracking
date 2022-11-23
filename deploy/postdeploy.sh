@@ -42,6 +42,7 @@ az storage blob upload-batch --connection-string $storagecs --account-name $stor
 
 echo "Create zip file for Function App deployment"
 cd ./azuremaps-indoor-realtime-position-tracking/src/realtime-azuremaps-update-iothubdemo/AzM_Web_PubSub_Demo-v02/AzM_Web_PubSub_Demo
+npm install
 zip -r functionapp.zip *.* index negotiate notification processdata node_modules bin obj
 
 echo "Deploy Function App"
@@ -52,7 +53,5 @@ az iot hub device-identity create --hub-name $iothubname --device-id $devicename
 
 deviceConnectionString=$(az iot hub device-identity connection-string show --hub-name $iothubname --device-id $devicename --resource-group $rgname)
 echo "Device ${devicename} connection string: ${deviceConnectionString}"
-
-$output = $deviceConnectionString
 
 echo "Post deployment script completed!"
