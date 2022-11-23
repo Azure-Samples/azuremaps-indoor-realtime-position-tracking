@@ -42,8 +42,9 @@ az storage blob upload-batch --connection-string $storagecs --account-name $stor
 
 echo "Create zip file for Function App deployment"
 cd ./azuremaps-indoor-realtime-position-tracking/src/realtime-azuremaps-update-iothubdemo/AzM_Web_PubSub_Demo-v02/AzM_Web_PubSub_Demo
+mkdir node_modules
 npm install
-zip -r functionapp.zip *.* index negotiate notification processdata node_modules bin obj
+zip -r functionapp.zip *.* index negotiate notification processdata node_modules
 
 echo "Deploy Function App"
 az functionapp deployment source config-zip -g $rgname -n $appname --src functionapp.zip
