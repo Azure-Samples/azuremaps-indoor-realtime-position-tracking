@@ -9,7 +9,7 @@ eventhubname=$6
 azuremapskey=$7
 blobstoragesuffix=$8
 iothubname=$9
-devicename=$10
+devicename=${10}
 
 echo "rgname: $rgname"
 echo "storagename: ${storagename}"
@@ -47,9 +47,7 @@ zip -r functionapp.zip *.* index negotiate notification processdata node_modules
 echo "Deploy Function App"
 az functionapp deployment source config-zip -g $rgname -n $appname --src functionapp.zip
 
-echo "Add myPhone device to IoT Hub and get connection string"
+echo "Add myPhone device to IoT Hub"
 az iot hub device-identity create --hub-name $iothubname --device-id $devicename --resource-group $rgname
-deviceNameConnectionString=$(az iot hub device-identity connection-string show --hub-name $iothubname --device-id $devicename --resource-group $rgname)
-echo $deviceNameConnectionString
 
 echo "Post deployment script completed!"

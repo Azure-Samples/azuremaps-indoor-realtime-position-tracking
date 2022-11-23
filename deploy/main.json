@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.12.40.16777",
-      "templateHash": "7836490191594594595"
+      "templateHash": "16370038218734085454"
     }
   },
   "parameters": {
@@ -432,6 +432,10 @@
     "webAppURL": {
       "type": "string",
       "value": "[format('https://{0}.azurewebsites.net/api/index?clientId=blobs_extension', variables('functionAppName'))]"
+    },
+    "deviceConnectionString": {
+      "type": "string",
+      "value": "[format('HostName={0}.azure-devices.net;DeviceId={1};SharedAccessKey={2}', variables('iotHubName'), variables('deviceName'), listKeys(resourceId('Microsoft.Devices/IotHubs', variables('iotHubName')), '2021-07-02').keys[0].value)]"
     }
   }
 }

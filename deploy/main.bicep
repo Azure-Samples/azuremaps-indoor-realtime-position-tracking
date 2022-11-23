@@ -338,6 +338,7 @@ var blobStorageConnectionString = 'DefaultEndpointsProtocol=https;AccountName=${
 var eventHubName = IoTHub.properties.eventHubEndpoints.events.path
 var azureMapsKey = listkeys(azureMaps.id, azureMaps.apiVersion).primaryKey
 var deviceName = 'myPhone'
+var myDeviceConnectionString = 'HostName=${iotHubName}.azure-devices.net;DeviceId=${deviceName};SharedAccessKey=${listKeys(IoTHub.id, IoTHub.apiVersion).keys[0].value}'
 
 // Execute post deployment script for configuring resources
 resource PostDeploymentscript 'Microsoft.Resources/deploymentScripts@2020-10-01' = {
@@ -401,3 +402,4 @@ resource storageroledef 'Microsoft.Authorization/roleAssignments@2018-09-01-prev
 }
 
 output webAppURL string = 'https://${functionApp.name}.azurewebsites.net/api/index?clientId=blobs_extension'
+output deviceConnectionString string = myDeviceConnectionString
