@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.12.40.16777",
-      "templateHash": "11995501456462698611"
+      "templateHash": "6586205566900556920"
     }
   },
   "parameters": {
@@ -54,6 +54,7 @@
     "applicationInsightsName": "[variables('appName')]",
     "functionWorkerRuntime": "[variables('runtime')]",
     "deviceName": "myPhone",
+    "myDeviceConnectionString": "[format('HostName={0}.azure-devices.net;DeviceId={1};SharedAccessKey=', variables('iotHubName'), variables('deviceName'))]",
     "identityName": "[format('{0}scriptidentity', parameters('projectName'))]",
     "rgRoleDefinitionId": "[resourceId('Microsoft.Authorization/roleDefinitions', '8e3af657-a8ff-443c-a75c-2fe8c4bcb635')]",
     "rgRoleDefinitionName": "[guid(resourceId('Microsoft.ManagedIdentity/userAssignedIdentities', variables('identityName')), variables('rgRoleDefinitionId'), resourceGroup().id)]",
@@ -435,7 +436,7 @@
     },
     "deviceConnectionString": {
       "type": "string",
-      "value": "[format('HostName={0}.azure-devices.net;DeviceId={1};SharedAccessKey={2}', variables('iotHubName'), variables('deviceName'), listkeys(resourceId('Microsoft.Devices/IotHubs', variables('iotHubName')), '2021-07-02').value)]"
+      "value": "[variables('myDeviceConnectionString')]"
     }
   }
 }

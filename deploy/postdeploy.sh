@@ -50,4 +50,9 @@ az functionapp deployment source config-zip -g $rgname -n $appname --src functio
 echo "Add myPhone device to IoT Hub"
 az iot hub device-identity create --hub-name $iothubname --device-id $devicename --resource-group $rgname
 
+deviceConnectionString=$(az iot hub device-identity connection-string show --hub-name $iothubname --device-id $devicename --resource-group $rgname)
+echo "Device ${devicename} connection string: ${deviceConnectionString}"
+
+$output = $deviceConnectionString
+
 echo "Post deployment script completed!"

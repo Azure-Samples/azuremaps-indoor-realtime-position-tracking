@@ -338,7 +338,7 @@ var blobStorageConnectionString = 'DefaultEndpointsProtocol=https;AccountName=${
 var eventHubName = IoTHub.properties.eventHubEndpoints.events.path
 var azureMapsKey = listkeys(azureMaps.id, azureMaps.apiVersion).primaryKey
 var deviceName = 'myPhone'
-var myDeviceConnectionString = 'HostName=${iotHubName}.azure-devices.net;DeviceId=${deviceName};SharedAccessKey=${IoTHub.listkeys().value}'
+var myDeviceConnectionString = 'HostName=${iotHubName}.azure-devices.net;DeviceId=${deviceName};SharedAccessKey='
 
 // Execute post deployment script for configuring resources
 resource PostDeploymentscript 'Microsoft.Resources/deploymentScripts@2020-10-01' = {
