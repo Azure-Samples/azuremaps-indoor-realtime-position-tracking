@@ -338,7 +338,7 @@ var blobStorageConnectionString = 'DefaultEndpointsProtocol=https;AccountName=${
 var eventHubName = IoTHub.properties.eventHubEndpoints.events.path
 var azureMapsKey = listkeys(azureMaps.id, azureMaps.apiVersion).primaryKey
 var deviceName = 'myPhone'
-var myDeviceConnectionString = 'HostName=${iotHubName}.azure-devices.net;DeviceId=${deviceName};SharedAccessKey=${listKeys(IoTHub.id, IoTHub.apiVersion).keys[0].value}'
+var myDeviceConnectionString = 'HostName=${iotHubName}.azure-devices.net;DeviceId=${deviceName};SharedAccessKey=${listKeys(IoTHub.id, IoTHub.apiVersion).value}'
 
 // Execute post deployment script for configuring resources
 resource PostDeploymentscript 'Microsoft.Resources/deploymentScripts@2020-10-01' = {
@@ -381,7 +381,7 @@ resource identity 'Microsoft.ManagedIdentity/userAssignedIdentities@2018-11-30' 
   location: location
 }
 
-// add RBAC role to resource group
+// Add RBAC role to resource group
 resource rgroledef 'Microsoft.Authorization/roleAssignments@2018-09-01-preview' = {
   name: rgRoleDefinitionName
   properties: {
@@ -391,7 +391,7 @@ resource rgroledef 'Microsoft.Authorization/roleAssignments@2018-09-01-preview' 
   }
 }
 
-// add "Storage Blob Data Contributor" role to RG for our deployment
+// Add "Storage Blob Data Contributor" role to RG for our deployment
 resource storageroledef 'Microsoft.Authorization/roleAssignments@2018-09-01-preview' = {
   name: storageRoleDefinitionName
   properties: {
