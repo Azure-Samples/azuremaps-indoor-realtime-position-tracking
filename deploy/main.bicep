@@ -147,6 +147,10 @@ resource IoTHub 'Microsoft.Devices/IotHubs@2021-07-02' = {
       }
     }
   }
+  dependsOn: [
+    container1
+    container2
+  ]
 }
 
 // Web PubSub

@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.12.40.16777",
-      "templateHash": "6586205566900556920"
+      "templateHash": "13551504889049270799"
     }
   },
   "parameters": {
@@ -193,6 +193,8 @@
         }
       },
       "dependsOn": [
+        "[resourceId('Microsoft.Storage/storageAccounts/blobServices/containers', split(format('{0}/default/{1}', variables('storageAccountName'), variables('storageContainerName1')), '/')[0], split(format('{0}/default/{1}', variables('storageAccountName'), variables('storageContainerName1')), '/')[1], split(format('{0}/default/{1}', variables('storageAccountName'), variables('storageContainerName1')), '/')[2])]",
+        "[resourceId('Microsoft.Storage/storageAccounts/blobServices/containers', split(format('{0}/default/{1}', variables('storageAccountName'), variables('storageContainerName2')), '/')[0], split(format('{0}/default/{1}', variables('storageAccountName'), variables('storageContainerName2')), '/')[1], split(format('{0}/default/{1}', variables('storageAccountName'), variables('storageContainerName2')), '/')[2])]",
         "[resourceId('Microsoft.Storage/storageAccounts', variables('storageAccountName'))]"
       ]
     },
