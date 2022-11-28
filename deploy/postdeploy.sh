@@ -11,7 +11,8 @@ blobstoragesuffix=$8
 iothubname=$9
 devicename=${10}
 
-echo "rgname: $rgname"
+echo "appname: ${appname}"
+echo "rgname: ${rgname}"
 echo "storagename: ${storagename}"
 echo "containername: ${containername}"
 echo "storagecs: ${storagecs}"
