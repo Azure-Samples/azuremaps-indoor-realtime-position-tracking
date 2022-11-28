@@ -48,7 +48,7 @@ cd ./azuremaps-indoor-realtime-position-tracking/src/realtime-azuremaps-update-i
 zip -r functionapp.zip *.* index negotiate notification processdata
 
 echo "Deploy Function App"
-az functionapp deployment source config-zip -g $rgname -n $appname --src functionapp.zip
+az functionapp deployment source config-zip -g $rgname -n $appname --src functionapp.zip --build-remote true
 
 echo "Add myPhone device to IoT Hub"
 az iot hub device-identity create --hub-name $iothubname --device-id $devicename --resource-group $rgname
