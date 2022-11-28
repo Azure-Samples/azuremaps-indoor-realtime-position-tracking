@@ -56,7 +56,6 @@ az iot hub device-identity create --hub-name $iothubname --device-id $devicename
 
 deviceConnectionString=$(az iot hub device-identity connection-string show --hub-name $iothubname --device-id $devicename --resource-group $rgname)
 echo "Device ${devicename} connection string: ${deviceConnectionString}"
-result="{\"MyDeviceConnectionString\": \"${deviceConnectionString}\"}"
-echo $result > $AZ_SCRIPTS_OUTPUT_PATH
+echo $deviceConnectionString > $AZ_SCRIPTS_OUTPUT_PATH
 
 echo "Post deployment script completed!"
