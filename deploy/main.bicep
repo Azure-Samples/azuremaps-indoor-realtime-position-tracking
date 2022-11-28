@@ -406,4 +406,4 @@ resource storageroledef 'Microsoft.Authorization/roleAssignments@2018-09-01-prev
 }
 
 output webAppURL string = 'https://${functionApp.name}.azurewebsites.net/api/index?clientId=blobs_extension'
-output deviceConnectionString string = PostDeploymentscript.properties.outputs.deviceConnectionString
+output deviceConnectionString object = PostDeploymentscript.properties.outputs
