@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.12.40.16777",
-      "templateHash": "9575802522129586761"
+      "templateHash": "15084513016932012172"
     }
   },
   "parameters": {
@@ -340,7 +340,7 @@
             },
             {
               "name": "EventHubConnectionString",
-              "value": "[format('Endpoint={0}/;SharedAccessKeyName=iothubowner;SharedAccessKey={1};EntityPath={2}', reference(resourceId('Microsoft.Devices/IotHubs', variables('iotHubName')), '2021-07-02').eventHubEndpoints.events.endpoint, listKeys(resourceId('Microsoft.Devices/IotHubs', variables('iotHubName')), '2021-07-02').value[0].primaryKey, reference(resourceId('Microsoft.Devices/IotHubs', variables('iotHubName')), '2021-07-02').eventHubEndpoints.events.path)]"
+              "value": "[format('Endpoint={0};SharedAccessKeyName=iothubowner;SharedAccessKey={1};EntityPath={2}', reference(resourceId('Microsoft.Devices/IotHubs', variables('iotHubName')), '2021-07-02').eventHubEndpoints.events.endpoint, listKeys(resourceId('Microsoft.Devices/IotHubs', variables('iotHubName')), '2021-07-02').value[0].primaryKey, reference(resourceId('Microsoft.Devices/IotHubs', variables('iotHubName')), '2021-07-02').eventHubEndpoints.events.path)]"
             }
           ],
           "ftpsState": "FtpsOnly",
@@ -437,7 +437,7 @@
     },
     "deviceConnectionString": {
       "type": "string",
-      "value": "[format('HostName={0}.azure-devices.net;DeviceId={1};SharedAccessKey={2}', variables('iotHubName'), variables('deviceName'), listKeys(resourceId('Microsoft.Devices/IotHubs', variables('iotHubName')), '2021-07-02').value[0].primaryKey)]"
+      "value": "[reference(resourceId('Microsoft.Resources/deploymentScripts', 'PostDeploymentscript'), '2020-10-01').outputs.deviceConnectionString]"
     }
   }
 }

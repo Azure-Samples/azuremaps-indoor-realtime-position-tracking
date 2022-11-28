@@ -276,7 +276,7 @@ resource applicationInsights 'Microsoft.Insights/components@2020-02-02' = {
   }
 }
 
-var eventHubConnectionString = 'Endpoint=${IoTHub.properties.eventHubEndpoints.events.endpoint}/;SharedAccessKeyName=iothubowner;SharedAccessKey=${listKeys(IoTHub.id, '2021-07-02').value[0].primaryKey};EntityPath=${eventHubName}'
+var eventHubConnectionString = 'Endpoint=${IoTHub.properties.eventHubEndpoints.events.endpoint};SharedAccessKeyName=iothubowner;SharedAccessKey=${listKeys(IoTHub.id, '2021-07-02').value[0].primaryKey};EntityPath=${eventHubName}'
 
 resource functionApp 'Microsoft.Web/sites@2022-03-01' = {
   name: functionAppName
@@ -342,7 +342,7 @@ var blobStorageConnectionString = 'DefaultEndpointsProtocol=https;AccountName=${
 var eventHubName = IoTHub.properties.eventHubEndpoints.events.path
 var azureMapsKey = listkeys(azureMaps.id, azureMaps.apiVersion).primaryKey
 var deviceName = 'myPhone'
-var myDeviceConnectionString = 'HostName=${iotHubName}.azure-devices.net;DeviceId=${deviceName};SharedAccessKey=${listKeys(IoTHub.id, '2021-07-02').value[0].primaryKey}'
+//var myDeviceConnectionString = 'HostName=${iotHubName}.azure-devices.net;DeviceId=${deviceName};SharedAccessKey=${listKeys(IoTHub.id, '2021-07-02').value[0].primaryKey}'
 
 // Execute post deployment script for configuring resources
 resource PostDeploymentscript 'Microsoft.Resources/deploymentScripts@2020-10-01' = {
@@ -406,4 +406,4 @@ resource storageroledef 'Microsoft.Authorization/roleAssignments@2018-09-01-prev
 }
 
 output webAppURL string = 'https://${functionApp.name}.azurewebsites.net/api/index?clientId=blobs_extension'
-output deviceConnectionString string = myDeviceConnectionString
+output deviceConnectionString string = PostDeploymentscript.properties.outputs.deviceConnectionString
