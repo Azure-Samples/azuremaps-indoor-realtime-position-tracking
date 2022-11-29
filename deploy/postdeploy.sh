@@ -58,4 +58,8 @@ deviceConnectionString=$(az iot hub device-identity connection-string show --hub
 echo "Device ${devicename} connection string: ${deviceConnectionString}"
 echo $deviceConnectionString > $AZ_SCRIPTS_OUTPUT_PATH
 
+webAppUrl=$(az functionapp function show --resource-group $rgname --name $appname --function-name index --query "invokeUrlTemplate")
+echo "Web app URL: ${webAppUrl}"
+echo $webAppUrl > $AZ_SCRIPTS_OUTPUT_PATH
+
 echo "Post deployment script completed!"
