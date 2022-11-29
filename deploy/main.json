@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.12.40.16777",
-      "templateHash": "9613623153708222340"
+      "templateHash": "18232497865519641148"
     }
   },
   "parameters": {
@@ -436,11 +436,7 @@
     }
   ],
   "outputs": {
-    "webAppURL": {
-      "type": "string",
-      "value": "[format('https://{0}.azurewebsites.net/api/index?clientId=blobs_extension', variables('functionAppName'))]"
-    },
-    "deviceConnectionString": {
+    "outputs": {
       "type": "object",
       "value": "[reference(resourceId('Microsoft.Resources/deploymentScripts', 'PostDeploymentscript'), '2020-10-01').outputs]"
     }

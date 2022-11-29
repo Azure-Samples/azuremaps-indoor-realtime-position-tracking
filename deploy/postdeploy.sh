@@ -59,7 +59,7 @@ echo "Device ${devicename} connection string: ${deviceConnectionString}"
 
 webAppUrl=$(az functionapp function show --resource-group $rgname --name $appname --function-name index --query "invokeUrlTemplate")
 echo "Web app URL: ${webAppUrl}"
-result="{ {\"webAppUrl\": ${webAppUrl}}, ${deviceConnectionString} }"
-echo $result > $AZ_SCRIPTS_OUTPUT_PATH
+outputs="{ {\"webAppUrl\": ${webAppUrl}}, ${deviceConnectionString} }"
+echo $outputs > $AZ_SCRIPTS_OUTPUT_PATH
 
 echo "Post deployment script completed!"
