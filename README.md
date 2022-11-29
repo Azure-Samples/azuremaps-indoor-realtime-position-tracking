@@ -61,6 +61,8 @@ We also have a demo path based on <strong>IoT Hub</strong> so that you can have 
 
 Once the deployment script completes (it takes about 10 minutes to do so), the only thing you need to do to see "a dot on the map" is the install the [IoT PnP](https://learn.microsoft.com/en-us/azure/iot-fundamentals/iot-phone-app-how-to) application on your smartphone, copy the device connection string from the deployment script <strong>outputs</strong> and link the IoT PnP application to this device (following the instructions detailed as part of [this document]((docs/Indoor%20real-time%20position%20tracking%20using%20Azure%20Maps%20and%20IoT%20Hub%20-%20Deployment%20Instructions.pdf))), and then viaualize the map by launching a browser using the web application URL also available from the deployment script <strong>outputs</strong>.
 
+![](images/postdeployment_script_outputs.png)
+
 ## Resources
 
 Any additional resources and related projects:
