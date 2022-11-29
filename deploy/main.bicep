@@ -277,6 +277,7 @@ resource applicationInsights 'Microsoft.Insights/components@2020-02-02' = {
 }
 
 var eventHubConnectionString = 'Endpoint=${IoTHub.properties.eventHubEndpoints.events.endpoint};SharedAccessKeyName=iothubowner;SharedAccessKey=${listKeys(IoTHub.id, '2021-07-02').value[0].primaryKey};EntityPath=${eventHubName}'
+var WebPubSubConnectionString = webpubsub.listKeys().primaryConnectionString
 
 resource functionApp 'Microsoft.Web/sites@2022-03-01' = {
   name: functionAppName
@@ -320,6 +321,10 @@ resource functionApp 'Microsoft.Web/sites@2022-03-01' = {
         {
           name: 'EventHubConnectionString'
           value: eventHubConnectionString
+        }
+        {
+          name: 'WebPubSubConnectionString'
+          value: WebPubSubConnectionString
         }
       ]
       ftpsState: 'FtpsOnly'

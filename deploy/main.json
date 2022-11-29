@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.12.40.16777",
-      "templateHash": "7167063252326028253"
+      "templateHash": "9613623153708222340"
     }
   },
   "parameters": {
@@ -341,6 +341,10 @@
             {
               "name": "EventHubConnectionString",
               "value": "[format('Endpoint={0};SharedAccessKeyName=iothubowner;SharedAccessKey={1};EntityPath={2}', reference(resourceId('Microsoft.Devices/IotHubs', variables('iotHubName')), '2021-07-02').eventHubEndpoints.events.endpoint, listKeys(resourceId('Microsoft.Devices/IotHubs', variables('iotHubName')), '2021-07-02').value[0].primaryKey, reference(resourceId('Microsoft.Devices/IotHubs', variables('iotHubName')), '2021-07-02').eventHubEndpoints.events.path)]"
+            },
+            {
+              "name": "WebPubSubConnectionString",
+              "value": "[listKeys(resourceId('Microsoft.SignalRService/webPubSub', variables('wpsName')), '2021-10-01').primaryConnectionString]"
             }
           ],
           "ftpsState": "FtpsOnly",
@@ -359,7 +363,8 @@
         "[resourceId('Microsoft.Insights/components', variables('applicationInsightsName'))]",
         "[resourceId('Microsoft.Web/serverfarms', variables('hostingPlanName'))]",
         "[resourceId('Microsoft.Devices/IotHubs', variables('iotHubName'))]",
-        "[resourceId('Microsoft.Storage/storageAccounts', variables('storageAccountName'))]"
+        "[resourceId('Microsoft.Storage/storageAccounts', variables('storageAccountName'))]",
+        "[resourceId('Microsoft.SignalRService/webPubSub', variables('wpsName'))]"
       ]
     },
     {
