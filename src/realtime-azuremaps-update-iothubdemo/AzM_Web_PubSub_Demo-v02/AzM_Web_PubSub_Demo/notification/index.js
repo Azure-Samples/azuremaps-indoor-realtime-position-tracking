@@ -21,12 +21,37 @@
 //SOFTWARE
 module.exports = function(context, myEventHubMessage) {
     myEventHubMessage.forEach((messageString, index) => {
-        let message = JSON.parse(messageString);
+
+        let message;
+
+        // for IoT PnP app
+        if (typeof messageString =='string') {
+            message = JSON.parse(messageString);
+        }
+        // for Abeeway tracker 
+        else {
+            message = messageString;
+            console.log(message);
+        }
+
         let messageDate = context.bindingData.enqueuedTimeUtcArray[index];
         let timestamp = Date.parse(messageDate);
-        if (message['geolocation'] != null) {
-            let lat = message['geolocation']['lat'];
-            let lon = message['geolocation']['lon'];
+        
+        if ((message['geolocation'] != null) || (message['coordinates'] != null)) {
+
+            let lat;
+            let long;
+
+            // for IoT PnP app
+            if (message['geolocation'] != null) {
+                lat = message['geolocation']['lat'];
+                lon = message['geolocation']['lon'];
+            } 
+            // for Abeeway tracker
+            else {
+                lat = message['coordinates'][1];
+                lon = message['coordinates'][0];
+            }
 
             const deviceId = context.bindingData.systemPropertiesArray[index]['iothub-connection-device-id'];     
             context.bindings.outputEventHubMessage = message;
